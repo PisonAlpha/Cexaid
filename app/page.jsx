@@ -434,7 +434,7 @@ const handleSubmit = async (e) => {
               </a>
 
               <a
-                href="https://x.com/Uphrate"
+                href="https://x.com/cexaidfunding"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Visit CEXAID on X"
