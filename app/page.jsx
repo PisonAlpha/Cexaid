@@ -41,13 +41,7 @@ const services = [
     desc: "Professional community growth, Telegram moderation, X engagement, campaign planning, and reputation management.",
     points: ["Telegram moderation", "X management", "AMA coordination", "Community growth"],
   },
-  {/* 
-
-    icon: Handshake,
-    title: "Business Acquisition",
-    desc: "Exploring acquisition opportunities across crypto startups, communities, Web3 brands, and blockchain businesses.",
-    points: ["Project acquisition", "Brand restructuring", "Community revival", "Strategic scaling"],
-   */},
+ 
   {
     icon: Rocket,
     title: "Early-Stage Funding",
