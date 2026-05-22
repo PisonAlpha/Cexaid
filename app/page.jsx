@@ -41,12 +41,13 @@ const services = [
     desc: "Professional community growth, Telegram moderation, X engagement, campaign planning, and reputation management.",
     points: ["Telegram moderation", "X management", "AMA coordination", "Community growth"],
   },
-  {
+  {/* 
+
     icon: Handshake,
     title: "Business Acquisition",
     desc: "Exploring acquisition opportunities across crypto startups, communities, Web3 brands, and blockchain businesses.",
     points: ["Project acquisition", "Brand restructuring", "Community revival", "Strategic scaling"],
-  },
+   */},
   {
     icon: Rocket,
     title: "Early-Stage Funding",
@@ -189,7 +190,7 @@ const handleSubmit = async (e) => {
             <p className="mt-6 max-w-xl text-lg leading-8 text-slate-300">
               CEXAID helps blockchain projects secure exchange listing support,
               connect with venture networks, strengthen community presence,
-              access funding opportunities, and explore strategic acquisition paths.
+              access funding opportunities, and explore strategic Partnership.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
@@ -291,8 +292,8 @@ const handleSubmit = async (e) => {
             CEXAID is a crypto business development company built to help
             blockchain projects move from early-stage visibility to stronger
             market expansion. We bridge the gap between founders, centralized
-            exchanges, investors, communities, funding partners, and acquisition
-            opportunities.
+            exchanges, investors, communities, and funding partners.
+          
           </p>
         </div>
       </section>
@@ -366,7 +367,7 @@ const handleSubmit = async (e) => {
                 "Exchange connections",
                 "Community management",
                 "Funding opportunities",
-                "Acquisition support",
+                
                 "Growth strategy",
                 "Long-term scaling",
               ].map((item) => (
@@ -418,7 +419,7 @@ const handleSubmit = async (e) => {
 
             <p className="mt-5 leading-8 text-slate-300">
               Submit your project details and the CEXAID team will review your
-              request for listing support, investor access, funding, acquisition,
+              request for listing support, investor access, funding,
               or social growth services.
             </p>
 
@@ -483,7 +484,7 @@ const handleSubmit = async (e) => {
               <option>CEX Listing</option>
               <option>VC Connection</option>
               <option>Social Management</option>
-              <option>Project Acquisition</option>
+              
               <option>Early-Stage Funding</option>
             </select>
 
