@@ -10,20 +10,44 @@ html {
   scroll-behavior: smooth;
 }
 
+:root {
+  /* Same design tokens as the Launchpad - applied site-wide now */
+  --lp-void: #0a0d12;
+  --lp-panel: #12161d;
+  --lp-panel-raised: #171c25;
+  --lp-line: #232a35;
+  --lp-brass: #c9a227;
+  --lp-brass-bright: #e8c468;
+  --lp-signal-green: #3ddc84;
+  --lp-signal-red: #e5484d;
+  --lp-ink: #edeff2;
+  --lp-mute: #8a93a3;
+
+  --lp-font-display: var(--lp-font-display-raw), Georgia, serif;
+  --lp-font-body: var(--lp-font-body-raw), system-ui, sans-serif;
+  --lp-font-mono: var(--lp-font-mono-raw), "Courier New", monospace;
+}
+
 body {
   margin: 0;
-  background: #020617;
-  color: white;
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--lp-void);
+  color: var(--lp-ink);
+  font-family: var(--lp-font-body);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--lp-font-display);
 }
 
 .glow {
-  box-shadow: 0 0 40px rgba(34, 211, 238, 0.25);
+  box-shadow: 0 0 40px rgba(201, 162, 39, 0.25);
 }
 
-
 .text-gradient {
-  background: linear-gradient(90deg, #22d3ee, #3b82f6, #a855f7);
+  background: linear-gradient(90deg, #c9a227, #e8c468, #3ddc84);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -36,22 +60,18 @@ body {
 
 .glass-strong {
   background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(34, 211, 238, 0.18);
+  border: 1px solid rgba(201, 162, 39, 0.18);
   backdrop-filter: blur(24px);
 }
 
 .border-glow {
   box-shadow:
-    0 0 0 1px rgba(34, 211, 238, 0.12),
-    0 0 45px rgba(34, 211, 238, 0.12);
+    0 0 0 1px rgba(201, 162, 39, 0.12),
+    0 0 45px rgba(201, 162, 39, 0.12);
 }
 
 .bg-gradient-primary {
-  background: linear-gradient(135deg, #22d3ee, #3b82f6);
-}
-
-.glow {
-  box-shadow: 0 0 45px rgba(34, 211, 238, 0.25);
+  background: linear-gradient(135deg, #c9a227, #e8c468);
 }
 
 .animate-float {
@@ -63,7 +83,8 @@ body {
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
 
@@ -73,13 +94,14 @@ body {
 }
 
 @keyframes pulseGlow {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.45;
-    filter: drop-shadow(0 0 4px rgba(34, 211, 238, 0.4));
+    filter: drop-shadow(0 0 4px rgba(201, 162, 39, 0.4));
   }
 
   50% {
     opacity: 1;
-    filter: drop-shadow(0 0 14px rgba(34, 211, 238, 0.9));
+    filter: drop-shadow(0 0 14px rgba(201, 162, 39, 0.9));
   }
 }
