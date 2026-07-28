@@ -13,10 +13,11 @@ import { WalletConnectButton } from "@/components/launchpad/WalletConnectButton"
 import { CopyLinkButton } from "@/components/launchpad/CopyLinkButton";
 import { ProjectLogo } from "@/components/launchpad/ProjectLogo";
 import { Collapsible } from "@/components/launchpad/Collapsible";
+import { ContributorsList } from "@/components/launchpad/ContributorsList";
 
 export default function ProjectPage() {
   const params = useParams();
-  const { projects, rounds, wallet, myApplication, loaded } = useLaunchpad();
+  const { projects, rounds, wallet, myApplication, contributions, loaded } = useLaunchpad();
   const project = projects.find((p) => p.slug === params.projectSlug);
 
   if (!loaded) {
@@ -113,6 +114,16 @@ export default function ProjectPage() {
                       subtitle={`Converts to ${round.tokenSymbol} once TGE is announced`}
                     >
                       <VestingSchedule steps={round.vestingSchedule} />
+                    </Collapsible>
+
+                    <Collapsible
+                      title="Contributors"
+                      subtitle={`${contributions.filter((c) => c.roundId === round.id).length} contribution(s) on ${round.chain || "BNB Chain"}`}
+                    >
+                      <ContributorsList
+                        contributions={contributions.filter((c) => c.roundId === round.id)}
+                        chain={round.chain}
+                      />
                     </Collapsible>
 
                     {round.requiresApproval && (
