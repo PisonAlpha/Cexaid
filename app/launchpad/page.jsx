@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { isRoundPublic } from "@/lib/launchpad/roundStatus";
 import { LedgerTape } from "@/components/launchpad/LedgerTape";
@@ -10,6 +11,7 @@ import { useLaunchpad } from "@/lib/launchpad/LaunchpadContext";
 
 export default function LaunchpadMarketplace() {
   const { liveProjects, rounds, wallet } = useLaunchpad();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const publicProjectRounds = (project) =>
     rounds.filter((r) => r.projectId === project.id && isRoundPublic(r));
@@ -28,14 +30,24 @@ export default function LaunchpadMarketplace() {
     <main className="hub">
       <header className="hub__top">
         <span className="hub__brand">CEXAID LAUNCHPAD</span>
-        <div className="hub__top-actions">
-          <Link href="/launchpad/apply-investor" className="hub__link">
+        <button
+          type="button"
+          aria-label="Toggle menu"
+          className="hub__menu-btn"
+          onClick={() => setMenuOpen((v) => !v)}
+        >
+          <span className={`hub__menu-bar ${menuOpen ? "hub__menu-bar--1open" : ""}`} />
+          <span className={`hub__menu-bar ${menuOpen ? "hub__menu-bar--2open" : ""}`} />
+          <span className={`hub__menu-bar ${menuOpen ? "hub__menu-bar--3open" : ""}`} />
+        </button>
+        <div className={`hub__top-actions ${menuOpen ? "hub__top-actions--open" : ""}`}>
+          <Link href="/launchpad/apply-investor" className="hub__link" onClick={() => setMenuOpen(false)}>
             Apply as investor
           </Link>
-          <Link href="/launchpad/kyc" className="hub__link">
+          <Link href="/launchpad/kyc" className="hub__link" onClick={() => setMenuOpen(false)}>
             Founder KYC
           </Link>
-          <Link href="/launchpad/apply-private-sale" className="hub__cta">
+          <Link href="/launchpad/apply-private-sale" className="hub__cta" onClick={() => setMenuOpen(false)}>
             Apply for Private Sale
           </Link>
           <WalletConnectButton />
@@ -165,6 +177,62 @@ export default function LaunchpadMarketplace() {
           display: flex;
           align-items: center;
           gap: 1rem;
+        }
+        .hub__menu-btn {
+          display: none;
+          flex-direction: column;
+          justify-content: center;
+          gap: 5px;
+          width: 40px;
+          height: 40px;
+          border: 1px solid var(--lp-line);
+          border-radius: 50%;
+          background: transparent;
+          cursor: pointer;
+        }
+        .hub__menu-bar {
+          display: block;
+          width: 16px;
+          height: 2px;
+          margin: 0 auto;
+          background: var(--lp-ink);
+          transition: transform 0.15s ease, opacity 0.15s ease;
+        }
+        .hub__menu-bar--1open {
+          transform: translateY(7px) rotate(45deg);
+        }
+        .hub__menu-bar--2open {
+          opacity: 0;
+        }
+        .hub__menu-bar--3open {
+          transform: translateY(-7px) rotate(-45deg);
+        }
+        @media (max-width: 760px) {
+          .hub__menu-btn {
+            display: flex;
+          }
+          .hub__top-actions {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: 0.5rem;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.5rem;
+            background: var(--lp-panel);
+            border: 1px solid var(--lp-line);
+            border-radius: 8px;
+            padding: 1rem;
+            z-index: 20;
+          }
+          .hub__top-actions--open {
+            display: flex;
+          }
+          .hub__top {
+            position: relative;
+          }
         }
         .hub__link {
           font-family: var(--lp-font-mono);

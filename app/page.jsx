@@ -102,6 +102,7 @@ function Counter({ value, suffix }) {
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -158,7 +159,7 @@ export default function Home() {
             <a href="#contact" className="hover:text-[#e8c468]">Contact</a>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="hidden items-center gap-3 md:flex">
             <Link
               href="/launchpad"
               className="rounded-full bg-[#c9a227] px-5 py-2 text-sm font-bold text-[#0a0d12] transition hover:bg-[#e8c468]"
@@ -172,7 +173,58 @@ export default function Home() {
               Apply Now
             </a>
           </div>
+
+          <button
+            type="button"
+            aria-label="Toggle menu"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-[#232a35] text-[#edeff2] md:hidden"
+            onClick={() => setMobileMenuOpen((v) => !v)}
+          >
+            <span className="relative block h-4 w-5">
+              <span
+                className={`absolute left-0 top-0 h-0.5 w-5 bg-current transition-transform ${
+                  mobileMenuOpen ? "translate-y-[7px] rotate-45" : ""
+                }`}
+              />
+              <span
+                className={`absolute left-0 top-[7px] h-0.5 w-5 bg-current transition-opacity ${
+                  mobileMenuOpen ? "opacity-0" : "opacity-100"
+                }`}
+              />
+              <span
+                className={`absolute left-0 top-[14px] h-0.5 w-5 bg-current transition-transform ${
+                  mobileMenuOpen ? "-translate-y-[7px] -rotate-45" : ""
+                }`}
+              />
+            </span>
+          </button>
         </nav>
+
+        {mobileMenuOpen && (
+          <div className="relative z-10 mt-4 flex flex-col gap-1 rounded-2xl border border-[#232a35] bg-[#12161d] p-4 text-sm md:hidden">
+            <a href="#about" className="rounded-lg px-3 py-2.5 text-[#8a93a3] hover:bg-[#171c25] hover:text-[#e8c468]" onClick={() => setMobileMenuOpen(false)}>About</a>
+            <a href="#services" className="rounded-lg px-3 py-2.5 text-[#8a93a3] hover:bg-[#171c25] hover:text-[#e8c468]" onClick={() => setMobileMenuOpen(false)}>Services</a>
+            <a href="#launchpad" className="rounded-lg px-3 py-2.5 text-[#8a93a3] hover:bg-[#171c25] hover:text-[#e8c468]" onClick={() => setMobileMenuOpen(false)}>Launchpad</a>
+            <a href="#traction" className="rounded-lg px-3 py-2.5 text-[#8a93a3] hover:bg-[#171c25] hover:text-[#e8c468]" onClick={() => setMobileMenuOpen(false)}>Traction</a>
+            <a href="#contact" className="rounded-lg px-3 py-2.5 text-[#8a93a3] hover:bg-[#171c25] hover:text-[#e8c468]" onClick={() => setMobileMenuOpen(false)}>Contact</a>
+            <div className="mt-2 flex flex-col gap-2 border-t border-[#232a35] pt-3">
+              <Link
+                href="/launchpad"
+                className="rounded-full bg-[#c9a227] px-5 py-2.5 text-center text-sm font-bold text-[#0a0d12]"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Launchpad
+              </Link>
+              <a
+                href="#contact"
+                className="rounded-full border border-[#c9a227]/40 px-5 py-2.5 text-center text-sm text-[#e8c468]"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Apply Now
+              </a>
+            </div>
+          </div>
+        )}
 
         <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 py-24 md:grid-cols-2">
           <motion.div initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>

@@ -10,13 +10,31 @@ import { VestingSchedule } from "@/components/launchpad/VestingSchedule";
 import { InvestorStatus } from "@/components/launchpad/InvestorStatus";
 import { PendingReviewCard } from "@/components/launchpad/PendingReviewCard";
 import { WalletConnectButton } from "@/components/launchpad/WalletConnectButton";
+import { CopyLinkButton } from "@/components/launchpad/CopyLinkButton";
 import { ProjectLogo } from "@/components/launchpad/ProjectLogo";
 import { Collapsible } from "@/components/launchpad/Collapsible";
 
 export default function ProjectPage() {
   const params = useParams();
-  const { projects, rounds, wallet, myApplication } = useLaunchpad();
+  const { projects, rounds, wallet, myApplication, loaded } = useLaunchpad();
   const project = projects.find((p) => p.slug === params.projectSlug);
+
+  if (!loaded) {
+    return (
+      <main className="project">
+        <p className="project__loading">Loading…</p>
+        <style jsx>{`
+          .project__loading {
+            max-width: 1080px;
+            margin: 4rem auto;
+            padding: 0 1.5rem;
+            font-family: var(--lp-font-body);
+            color: var(--lp-mute);
+          }
+        `}</style>
+      </main>
+    );
+  }
 
   if (!project) return notFound();
 
@@ -47,7 +65,10 @@ export default function ProjectPage() {
             </div>
             <p className="project__tagline">{project.tagline}</p>
           </div>
-          <WalletConnectButton />
+          <div className="project__header-actions">
+            <CopyLinkButton />
+            <WalletConnectButton />
+          </div>
         </div>
 
         {project.description && <p className="project__description">{project.description}</p>}
@@ -159,6 +180,12 @@ export default function ProjectPage() {
         .project__header-text {
           flex: 1;
           min-width: 200px;
+        }
+        .project__header-actions {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          flex-wrap: wrap;
         }
         .project__name-row {
           display: flex;
