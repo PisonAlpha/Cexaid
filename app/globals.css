@@ -11,19 +11,21 @@ html {
 }
 
 :root {
-  /* Same design tokens as the Launchpad - applied site-wide now */
-  --lp-void: #0a0d12;
-  --lp-panel: #12161d;
-  --lp-panel-raised: #171c25;
-  --lp-line: #232a35;
-  --lp-brass: #c9a227;
-  --lp-brass-bright: #e8c468;
-  --lp-signal-green: #3ddc84;
-  --lp-signal-red: #e5484d;
-  --lp-ink: #edeff2;
+  /* CryptoRank-style palette. Token names kept (--lp-brass = primary accent)
+     so every existing component re-themes without edits. */
+  --lp-void: #090b10;
+  --lp-panel: #11151c;
+  --lp-panel-raised: #161b24;
+  --lp-line: #212835;
+  --lp-brass: #3772ff;
+  --lp-brass-bright: #6d97ff;
+  --lp-on-accent: #ffffff;
+  --lp-signal-green: #16c784;
+  --lp-signal-red: #ea3943;
+  --lp-ink: #eef1f6;
   --lp-mute: #8a93a3;
 
-  --lp-font-display: var(--lp-font-display-raw), Georgia, serif;
+  --lp-font-display: var(--lp-font-body-raw), system-ui, sans-serif;
   --lp-font-body: var(--lp-font-body-raw), system-ui, sans-serif;
   --lp-font-mono: var(--lp-font-mono-raw), "Courier New", monospace;
 }
@@ -43,11 +45,11 @@ h4 {
 }
 
 .glow {
-  box-shadow: 0 0 40px rgba(201, 162, 39, 0.25);
+  box-shadow: 0 0 40px rgba(55,114,255, 0.25);
 }
 
 .text-gradient {
-  background: linear-gradient(90deg, #c9a227, #e8c468, #3ddc84);
+  background: linear-gradient(90deg, #3772ff, #6d97ff, #16c784);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -60,18 +62,18 @@ h4 {
 
 .glass-strong {
   background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(201, 162, 39, 0.18);
+  border: 1px solid rgba(55,114,255, 0.18);
   backdrop-filter: blur(24px);
 }
 
 .border-glow {
   box-shadow:
-    0 0 0 1px rgba(201, 162, 39, 0.12),
-    0 0 45px rgba(201, 162, 39, 0.12);
+    0 0 0 1px rgba(55,114,255, 0.12),
+    0 0 45px rgba(55,114,255, 0.12);
 }
 
 .bg-gradient-primary {
-  background: linear-gradient(135deg, #c9a227, #e8c468);
+  background: linear-gradient(135deg, #3772ff, #6d97ff);
 }
 
 .animate-float {
@@ -97,11 +99,11 @@ h4 {
   0%,
   100% {
     opacity: 0.45;
-    filter: drop-shadow(0 0 4px rgba(201, 162, 39, 0.4));
+    filter: drop-shadow(0 0 4px rgba(55,114,255, 0.4));
   }
 
   50% {
     opacity: 1;
-    filter: drop-shadow(0 0 14px rgba(201, 162, 39, 0.9));
+    filter: drop-shadow(0 0 14px rgba(55,114,255, 0.9));
   }
 }

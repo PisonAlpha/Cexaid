@@ -86,7 +86,7 @@ export function WalletConnectButton() {
         }
         .wallet-btn {
           background: var(--lp-brass);
-          color: var(--lp-void);
+          color: var(--lp-on-accent);
           font-family: var(--lp-font-body);
           font-weight: 600;
           font-size: 0.85rem;

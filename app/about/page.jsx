@@ -1,3 +1,6 @@
+import { SiteHeader } from "@/components/site/SiteHeader";
+import { SiteFooter } from "@/components/site/SiteFooter";
+import Link from "next/link";
 import { Send, Twitter, Mail } from "lucide-react";
 
 export const metadata = {
@@ -49,9 +52,12 @@ const TEAM = [
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-[#0a0d12] text-[#edeff2] px-6 py-16 md:px-16">
+    <>
+      <SiteHeader />
+      <main className="min-h-screen bg-[#090b10] text-[#edeff2] px-6 py-16 md:px-16">
       <div className="mx-auto max-w-5xl">
-        <p className="text-sm font-bold uppercase tracking-widest text-[#c9a227]">Team</p>
+        <Link href="/" className="mb-6 inline-block text-sm text-[#8a93a3] hover:text-[#6d97ff]">← Back to Home</Link>
+        <p className="text-sm font-bold uppercase tracking-widest text-[#3772ff]">Team</p>
         <h1 className="mt-3 font-serif text-4xl font-black md:text-5xl">The people behind CEXAID</h1>
         <p className="mt-4 max-w-2xl leading-7 text-[#8a93a3]">
           The team building and operating the CEXAID platform and Launchpad.
@@ -61,15 +67,15 @@ export default function AboutPage() {
           {TEAM.map((member) => (
             <div
               key={member.name}
-              className="rounded-2xl border border-[#232a35] bg-[#12161d] p-6"
+              className="rounded-2xl border border-[#212835] bg-[#11151c] p-6"
             >
               <div className="flex items-center gap-4">
-                <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full border border-[#c9a227]/40 bg-[#171c25] font-serif text-xl font-semibold text-[#c9a227]">
+                <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full border border-[#3772ff]/40 bg-[#161b24] font-serif text-xl font-semibold text-[#3772ff]">
                   {member.initial}
                 </div>
                 <div>
                   <p className="font-serif text-lg font-semibold text-[#edeff2]">{member.name}</p>
-                  <p className="text-sm text-[#c9a227]">{member.role}</p>
+                  <p className="text-sm text-[#3772ff]">{member.role}</p>
                 </div>
               </div>
               <p className="mt-4 text-sm leading-6 text-[#8a93a3]">{member.description}</p>
@@ -77,7 +83,7 @@ export default function AboutPage() {
                 {member.expertise.map((skill) => (
                   <span
                     key={skill}
-                    className="rounded-full border border-[#232a35] px-3 py-1 text-xs text-[#8a93a3]"
+                    className="rounded-full border border-[#212835] px-3 py-1 text-xs text-[#8a93a3]"
                   >
                     {skill}
                   </span>
@@ -87,8 +93,8 @@ export default function AboutPage() {
           ))}
         </div>
 
-        <div className="mt-20 border-t border-[#232a35] pt-16">
-          <p className="text-sm font-bold uppercase tracking-widest text-[#c9a227]">Contact</p>
+        <div className="mt-20 border-t border-[#212835] pt-16">
+          <p className="text-sm font-bold uppercase tracking-widest text-[#3772ff]">Contact</p>
           <h2 className="mt-3 font-serif text-3xl font-black md:text-4xl">Get in touch</h2>
           <p className="mt-4 max-w-2xl leading-7 text-[#8a93a3]">
             For listing support, investor inquiries, or anything else, reach
@@ -100,7 +106,7 @@ export default function AboutPage() {
               href="https://t.me/Bridge4_2"
               target="_blank"
               rel="noreferrer"
-              className="flex h-14 w-14 items-center justify-center rounded-full border border-[#c9a227]/30 bg-[#c9a227]/10 text-[#e8c468] transition hover:bg-[#c9a227] hover:text-[#0a0d12]"
+              className="flex h-14 w-14 items-center justify-center rounded-full border border-[#3772ff]/30 bg-[#3772ff]/10 text-[#6d97ff] transition hover:bg-[#3772ff] hover:text-white"
               aria-label="Telegram"
             >
               <Send />
@@ -109,14 +115,14 @@ export default function AboutPage() {
               href="https://x.com/cexaidfunding"
               target="_blank"
               rel="noreferrer"
-              className="flex h-14 w-14 items-center justify-center rounded-full border border-[#c9a227]/30 bg-[#c9a227]/10 text-[#e8c468] transition hover:bg-[#c9a227] hover:text-[#0a0d12]"
+              className="flex h-14 w-14 items-center justify-center rounded-full border border-[#3772ff]/30 bg-[#3772ff]/10 text-[#6d97ff] transition hover:bg-[#3772ff] hover:text-white"
               aria-label="X (Twitter)"
             >
               <Twitter />
             </a>
             <a
               href="mailto:contact@cexaid.com"
-              className="flex h-14 w-14 items-center justify-center rounded-full border border-[#c9a227]/30 bg-[#c9a227]/10 text-[#e8c468] transition hover:bg-[#c9a227] hover:text-[#0a0d12]"
+              className="flex h-14 w-14 items-center justify-center rounded-full border border-[#3772ff]/30 bg-[#3772ff]/10 text-[#6d97ff] transition hover:bg-[#3772ff] hover:text-white"
               aria-label="Email"
             >
               <Mail />
@@ -125,5 +131,7 @@ export default function AboutPage() {
         </div>
       </div>
     </main>
+      <SiteFooter />
+    </>
   );
 }

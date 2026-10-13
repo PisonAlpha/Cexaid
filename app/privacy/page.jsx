@@ -1,17 +1,17 @@
+import { SiteHeader } from "@/components/site/SiteHeader";
+import { SiteFooter } from "@/components/site/SiteFooter";
+import Link from "next/link";
 export const metadata = {
   title: "Privacy Policy | CEXAID",
 };
 
 export default function PrivacyPage() {
   return (
-    <main className="min-h-screen bg-[#0a0d12] text-[#edeff2] px-6 py-16 md:px-16">
+    <>
+      <SiteHeader />
+      <main className="min-h-screen bg-[#090b10] text-[#edeff2] px-6 py-16 md:px-16">
       <div className="mx-auto max-w-3xl">
-        <div className="mb-10 rounded-2xl border border-[#e5484d]/40 bg-[#e5484d]/10 p-5 text-sm leading-6 text-[#edeff2]">
-          <strong className="text-[#e5484d]">This is a draft template, not legal advice.</strong>{" "}
-          Data protection law varies significantly by region (e.g. GDPR,
-          CCPA). Have qualified legal counsel review this before it governs
-          real user data.
-        </div>
+        <Link href="/" className="mb-6 inline-block text-sm text-[#8a93a3] hover:text-[#6d97ff]">← Back to Home</Link>
 
         <p className="text-sm font-mono uppercase tracking-widest text-[#8a93a3]">
           Last updated: July 2026
@@ -101,18 +101,20 @@ export default function PrivacyPage() {
         <Section title="9. Contact">
           <p>
             For privacy-related questions or requests, contact{" "}
-            <a href="mailto:contact@cexaid.com" className="text-[#c9a227]">contact@cexaid.com</a>.
+            <a href="mailto:contact@cexaid.com" className="text-[#3772ff]">contact@cexaid.com</a>.
           </p>
         </Section>
       </div>
     </main>
+      <SiteFooter />
+    </>
   );
 }
 
 function Section({ title, children }) {
   return (
     <section className="mt-10">
-      <h2 className="font-serif text-xl font-semibold text-[#c9a227]">{title}</h2>
+      <h2 className="font-serif text-xl font-semibold text-[#3772ff]">{title}</h2>
       <div className="mt-3 space-y-3 leading-7 text-[#8a93a3] [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mt-1 [&_strong]:text-[#edeff2]">
         {children}
       </div>

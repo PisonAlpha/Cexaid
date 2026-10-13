@@ -31,7 +31,7 @@ export function CopyLinkButton() {
         }
         .copy-link:hover {
           background: var(--lp-brass);
-          color: var(--lp-void);
+          color: var(--lp-on-accent);
         }
       `}</style>
     </button>

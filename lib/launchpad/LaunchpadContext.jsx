@@ -43,6 +43,8 @@ function mapProject(row) {
     telegram: row.telegram,
     founderWallet: row.founder_wallet,
     isDemo: row.is_demo ?? false,
+    coingeckoId: row.coingecko_id || null,
+    contractAddress: row.contract_address || null,
   };
 }
 
@@ -68,6 +70,7 @@ function mapRound(row) {
     paymentStatus: row.payment_status,
     vestingSchedule: row.vesting_schedule,
     chain: row.chain || "BNB Chain",
+    tgeDate: row.tge_date || null,
     status: computeRoundStatus({ startsAt: row.starts_at, endsAt: row.ends_at }),
   };
 }

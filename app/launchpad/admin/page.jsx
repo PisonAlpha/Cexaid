@@ -184,7 +184,7 @@ export default function AdminPage() {
           }
           .admin__login button {
             background: var(--lp-brass);
-            color: var(--lp-void);
+            color: var(--lp-on-accent);
             font-weight: 600;
             font-size: 0.9rem;
             padding: 0.7rem 1rem;
@@ -210,6 +210,15 @@ export default function AdminPage() {
         <div className="admin-dash__head-actions">
           <Link href="/launchpad/admin/create-listing" className="admin-dash__create-link">
             + Create listing
+          </Link>
+          <Link href="/launchpad/admin/add-contributor" className="admin-dash__create-link">
+            + Add contributors
+          </Link>
+          <Link href="/launchpad/admin/market-links" className="admin-dash__create-link">
+            Market links
+          </Link>
+          <Link href="/launchpad/admin/token-unlocks" className="admin-dash__create-link">
+            Token unlocks
           </Link>
           <button onClick={handleLogout} className="admin-dash__logout">
             Sign out
@@ -524,7 +533,7 @@ export default function AdminPage() {
           font-family: var(--lp-font-mono);
           font-size: 0.6rem;
           letter-spacing: 0.08em;
-          color: var(--lp-void);
+          color: var(--lp-on-accent);
           background: var(--lp-brass);
           padding: 0.1rem 0.4rem;
           border-radius: 2px;
@@ -548,7 +557,7 @@ export default function AdminPage() {
         }
         .admin-dash__approve {
           background: var(--lp-signal-green);
-          color: var(--lp-void);
+          color: var(--lp-on-accent);
           border: none;
           font-weight: 600;
           font-size: 0.8rem;

@@ -208,7 +208,7 @@ export default function ProjectPage() {
           font-family: var(--lp-font-mono);
           font-size: 0.65rem;
           letter-spacing: 0.08em;
-          color: var(--lp-void);
+          color: var(--lp-on-accent);
           background: var(--lp-brass);
           padding: 0.2rem 0.55rem;
           border-radius: 2px;

@@ -134,7 +134,7 @@ export function ContributionForm({ round }) {
         }
         .contrib__submit {
           background: var(--lp-brass);
-          color: var(--lp-void);
+          color: var(--lp-on-accent);
           font-weight: 600;
           font-size: 0.9rem;
           padding: 0.7rem 1rem;

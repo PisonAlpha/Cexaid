@@ -101,7 +101,7 @@ export function ProjectCard({ project, rounds }) {
             font-family: var(--lp-font-mono);
             font-size: 0.6rem;
             letter-spacing: 0.08em;
-            color: var(--lp-void);
+            color: var(--lp-on-accent);
             background: var(--lp-brass);
             padding: 0.1rem 0.4rem;
             border-radius: 2px;
