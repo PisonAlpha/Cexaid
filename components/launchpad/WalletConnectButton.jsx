@@ -63,7 +63,7 @@ export function WalletConnectButton() {
               in .env.local.
             </p>
           )}
-          {connectors.map((connector) => (
+          {Array.from(new Map(connectors.map((c) => [c.id, c])).values()).map((connector) => (
             <button
               key={connector.id}
               className="wallet-menu__item"

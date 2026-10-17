@@ -9,9 +9,31 @@ const TBA = <span style={{ color: "var(--lp-mute)" }}>To be announced</span>;
 const fmt = (n) => (n == null ? TBA : Number(n).toLocaleString());
 const STATUS = { live: "Live", "in-progress": "In progress", planned: "Planned" };
 
+const vestText = (v) => {
+  if (!v) return null;
+  const parts = [];
+  parts.push(v.tge > 0 ? `${v.tge}% at launch` : "0% at launch");
+  if (v.cliff > 0) parts.push(`${v.cliff}-month cliff`);
+  if (v.tge < 100) parts.push(`${v.linear}-month linear`);
+  return parts.join(", ");
+};
+// % of a category unlocked `m` months after launch.
+const unlocked = (v, m) => {
+  if (!v) return 0;
+  if (m <= v.cliff) return v.tge;
+  return v.tge + (100 - v.tge) * Math.min((m - v.cliff) / Math.max(v.linear, 1), 1);
+};
+const MONTHS = [0, 3, 6, 12, 18, 24, 36, 48, 54];
+
 export default function TokenPage() {
   const t = TOKEN;
   const tk = t.tokenomics;
+  const initialPct = tk.initialCirculatingPercent;
+  const initialTokens = initialPct != null && tk.totalSupply ? Math.round((tk.totalSupply * initialPct) / 100) : null;
+  const allPct = tk.allocation.length > 0 && tk.allocation.every((a) => a.percent != null);
+  const sumPct = tk.allocation.reduce((s, a) => s + (a.percent || 0), 0);
+  const tgeSum = tk.allocation.reduce((sum, a) => sum + ((a.percent || 0) * (a.vest?.tge || 0)) / 100, 0);
+  const circ = (m) => tk.allocation.reduce((sum, a) => sum + ((a.percent || 0) * unlocked(a.vest, m)) / 100, 0);
   return (
     <>
       <SiteHeader />
@@ -46,21 +68,55 @@ export default function TokenPage() {
           <div className="facts">
             <div><span>Ticker</span><b>{t.ticker || TBA}</b></div>
             <div><span>Total supply</span><b>{fmt(tk.totalSupply)}</b></div>
+            <div><span>Initial circulating</span><b>{initialPct != null ? `${initialPct}% (${fmt(initialTokens)} ${t.ticker || ""})` : TBA}</b></div>
             <div><span>Chain</span><b>{tk.chain || TBA}</b></div>
-            <div><span>Initial circulating</span><b>{fmt(tk.initialCirculating)}</b></div>
           </div>
-          {tk.allocation.length > 0 ? (
-            <div className="alloc">
+
+          <div className="dist">
+            <div className="dist__row dist__row--head"><span>Category</span><span className="r">Allocation</span><span className="r">Tokens</span><span>Vesting</span></div>
+            {tk.allocation.map((a) => (
+              <div key={a.label} className="dist__row">
+                <span>{a.label}</span>
+                <span className="r">{a.percent != null ? `${a.percent}%` : TBA}</span>
+                <span className="r">{a.percent != null && tk.totalSupply ? fmt(Math.round((tk.totalSupply * a.percent) / 100)) : TBA}</span>
+                <span>{a.vest ? vestText(a.vest) : TBA}</span>
+              </div>
+            ))}
+          </div>
+          {allPct && sumPct === 100 && (
+            <div className="alloc" style={{ marginTop: "1.1rem" }}>
               {tk.allocation.map((a) => (
-                <div key={a.label} className="alloc__row">
-                  <span>{a.label}</span>
-                  <div className="bar"><i style={{ width: `${a.percent}%` }} /></div>
-                  <b>{a.percent}%</b>
-                </div>
+                <div key={a.label} className="alloc__row"><span>{a.label}</span><div className="bar"><i style={{ width: `${a.percent}%` }} /></div><span className="r">{a.percent}%</span></div>
               ))}
             </div>
-          ) : (
-            <p className="body">The allocation breakdown (community, team, treasury, liquidity, vesting) will be published here once finalised.</p>
+          )}
+          {allPct && Math.abs(tgeSum - initialPct) > 0.001 && <p className="note">Note: launch unlocks add up to {tgeSum}%, not {initialPct}%.</p>}
+
+          {allPct && (
+            <>
+              <h3 className="sub">Projected circulating supply</h3>
+              <p className="note">Based on the vesting schedules above, measured from launch. Illustrative: it excludes any burns or buybacks and changes if the schedules change.</p>
+              <div className="dist">
+                <div className="dist__row dist__row--head dist__row--circ"><span>Months after launch</span><span className="r">Circulating</span><span className="r">Tokens</span></div>
+                {MONTHS.map((m) => {
+                  const pct = circ(m);
+                  return (
+                    <div key={m} className="dist__row dist__row--circ">
+                      <span>{m === 0 ? "At launch" : `Month ${m}`}</span>
+                      <span className="r">{pct.toFixed(pct % 1 === 0 ? 0 : 1)}%</span>
+                      <span className="r">{fmt(Math.round((tk.totalSupply * pct) / 100))}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
+          {allPct && sumPct !== 100 && <p className="note">Note: allocation percentages currently add up to {sumPct}%, not 100%.</p>}
+
+          {tk.notIncluded?.length > 0 && (
+            <p className="body" style={{ marginTop: "0.9rem" }}>
+              <b style={{ color: "var(--lp-ink)" }}>Not part of CXD&apos;s distribution:</b> {tk.notIncluded.join(" · ")}.
+            </p>
           )}
         </section>
 
@@ -120,6 +176,13 @@ export default function TokenPage() {
         .tk .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0.75rem; margin-bottom: 1rem; }
         .tk .facts div { background: var(--lp-panel); border: 1px solid var(--lp-line); border-radius: 12px; padding: 0.85rem 1rem; display: flex; flex-direction: column; gap: 0.25rem; }
         .tk .facts span { color: var(--lp-mute); font-size: 0.76rem; }
+        .tk .dist { border: 1px solid var(--lp-line); border-radius: 12px; background: var(--lp-panel); overflow-x: auto; }
+        .tk .dist__row { display: grid; grid-template-columns: 1.4fr 0.8fr 1fr 1.2fr; gap: 0.8rem; padding: 0.7rem 1rem; border-bottom: 1px solid var(--lp-line); font-size: 0.88rem; min-width: 560px; }
+        .tk .dist__row:last-child { border-bottom: 0; }
+        .tk .dist__row--head { color: var(--lp-mute); font-size: 0.74rem; }
+        .tk .r { text-align: right; }
+        .tk .dist__row--circ { grid-template-columns: 1.4fr 0.8fr 1fr; min-width: 420px; }
+        .tk .sub { margin: 1.4rem 0 0.4rem; font-size: 1.05rem; }
         .tk .alloc { display: flex; flex-direction: column; gap: 0.6rem; }
         .tk .alloc__row { display: grid; grid-template-columns: 200px 1fr 52px; gap: 0.8rem; align-items: center; font-size: 0.88rem; }
         .tk .bar { height: 8px; border-radius: 4px; background: var(--lp-line); overflow: hidden; }

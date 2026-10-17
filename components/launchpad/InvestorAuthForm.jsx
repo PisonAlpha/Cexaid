@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useLaunchpad } from "@/lib/launchpad/LaunchpadContext";
+import { ForgotPassword } from "./ForgotPassword";
 
 export function InvestorAuthForm() {
   const { investorSignUp, investorSignIn } = useLaunchpad();
@@ -77,6 +78,8 @@ export function InvestorAuthForm() {
       <button type="submit" className="auth-form__submit" disabled={status === "submitting"}>
         {status === "submitting" ? "Please wait…" : mode === "signup" ? "Create account" : "Log in"}
       </button>
+
+      {mode === "login" && <ForgotPassword defaultEmail={email} />}
 
       {message && (
         <p className={`auth-form__message auth-form__message--${message.type}`}>{message.text}</p>

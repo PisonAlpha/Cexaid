@@ -3,6 +3,10 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { RoundContractStatus } from "@/components/launchpad/RoundContractStatus";
+import { RoundAdminControls } from "@/components/launchpad/RoundAdminControls";
+import { RoundReviewDetails } from "@/components/launchpad/RoundReviewDetails";
+import { ForgotPassword } from "@/components/launchpad/ForgotPassword";
 
 export default function AdminPage() {
   const [supabase] = useState(() => createClient());
@@ -134,6 +138,7 @@ export default function AdminPage() {
           </label>
           <button type="submit">Sign in</button>
           {loginError && <p className="admin__error">{loginError}</p>}
+          <ForgotPassword defaultEmail={email} />
         </form>
 
         <style jsx>{`
@@ -350,6 +355,10 @@ export default function AdminPage() {
                 Allocation ${Number(round.total_allocation_usd).toLocaleString()} · Ticket $
                 {round.min_ticket_usd}-${round.max_ticket_usd} · founder {round.projects?.founder_wallet}
               </div>
+              <RoundReviewDetails
+                round={round}
+                kyc={kycSubmissions.find((s) => s.wallet?.toLowerCase() === round.projects?.founder_wallet?.toLowerCase())}
+              />
             </div>
             <div className="admin-dash__actions">
               <button className="admin-dash__approve" onClick={() => decideRound(round.id, "approved")}>
@@ -375,8 +384,10 @@ export default function AdminPage() {
                 ${Number(round.raised_usd).toLocaleString()} raised of $
                 {Number(round.total_allocation_usd).toLocaleString()} · {round.chain}
               </div>
+              {round.contract_address && <RoundAdminControls round={round} />}
             </div>
             <div className="admin-dash__actions">
+              <RoundContractStatus round={round} />
               <a
                 href={`/launchpad/${round.projects?.slug}`}
                 target="_blank"

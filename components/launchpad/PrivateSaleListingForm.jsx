@@ -15,44 +15,23 @@ export function PrivateSaleListingForm({ onCreated }) {
     telegram: myProject?.telegram ?? "",
     roundTagline: "",
     tokenSymbol: "",
+    tokenContract: "",
     tokenPriceUSD: "",
     totalAllocationUSD: "",
     minTicketUSD: "",
     maxTicketUSD: "",
     startsAt: "",
     endsAt: "",
-    vestingSchedule: [{ label: "At TGE (claim opens)", percent: "" }],
+    tgeAt: "",
+    tgePercent: "",
+    cliffMonths: "0",
+    linearMonths: "",
   });
   const [error, setError] = useState(null);
 
   function update(field) {
     return (e) => setForm((prev) => ({ ...prev, [field]: e.target.value }));
   }
-
-  function updateVestingStep(index, field) {
-    return (e) =>
-      setForm((prev) => {
-        const steps = [...prev.vestingSchedule];
-        steps[index] = { ...steps[index], [field]: e.target.value };
-        return { ...prev, vestingSchedule: steps };
-      });
-  }
-
-  function addVestingStep() {
-    setForm((prev) => ({
-      ...prev,
-      vestingSchedule: [...prev.vestingSchedule, { label: "", percent: "" }],
-    }));
-  }
-
-  function removeVestingStep(index) {
-    setForm((prev) => ({
-      ...prev,
-      vestingSchedule: prev.vestingSchedule.filter((_, i) => i !== index),
-    }));
-  }
-
-  const vestingTotal = form.vestingSchedule.reduce((sum, s) => sum + (Number(s.percent) || 0), 0);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -61,12 +40,45 @@ export function PrivateSaleListingForm({ onCreated }) {
       setError("Project name, tagline, and description are required.");
       return;
     }
+    if (!/^0x[a-fA-F0-9]{40}$/.test(form.tokenContract.trim())) {
+      setError("Create your token first, then paste its contract address here (0x…, 42 characters).");
+      return;
+    }
+    if (!form.tokenSymbol || !form.tokenPriceUSD || !form.totalAllocationUSD || !form.minTicketUSD || !form.maxTicketUSD || !form.startsAt || !form.endsAt) {
+      setError("Fill in all the sale terms.");
+      return;
+    }
+    if (!form.tgeAt || form.tgePercent === "" || form.linearMonths === "" && Number(form.tgePercent) < 100) {
+      setError("Set the token claim (TGE) date and the vesting terms.");
+      return;
+    }
+    // Dates are typed in the founder's local time. Convert them to exact UTC moments here in the
+    // browser, so the server (which may run in another time zone) stores what the founder meant.
+    const startMs = new Date(form.startsAt).getTime();
+    const endMs = new Date(form.endsAt).getTime();
+    const tgeMs = new Date(form.tgeAt).getTime();
+    if (!startMs || !endMs || !tgeMs) {
+      setError("One of the dates is not valid. Re-enter the start, end and claim (TGE) dates.");
+      return;
+    }
+    if (endMs <= startMs) {
+      setError("The sale end must be after the sale start.");
+      return;
+    }
+    if (endMs <= Date.now()) {
+      setError("The sale end date is already in the past.");
+      return;
+    }
+    if (tgeMs < endMs) {
+      setError("The token claim (TGE) date must be on or after the sale end date.");
+      return;
+    }
     const result = await createPrivateSaleListing({
       ...form,
-      vestingSchedule: form.vestingSchedule.map((s) => ({
-        label: s.label,
-        percent: Number(s.percent) || 0,
-      })),
+      tokenContract: form.tokenContract.trim(),
+      startsAt: new Date(startMs).toISOString(),
+      endsAt: new Date(endMs).toISOString(),
+      tgeAt: new Date(tgeMs).toISOString(),
     });
     if (result.ok) {
       onCreated?.(result);
@@ -128,6 +140,10 @@ export function PrivateSaleListingForm({ onCreated }) {
           <span>Round tagline (optional)</span>
           <input type="text" value={form.roundTagline} onChange={update("roundTagline")} />
         </label>
+        <label className="create__field">
+          <span>Token contract address on BNB Chain (required)</span>
+          <input type="text" placeholder="0x… (your token must already be created)" value={form.tokenContract} onChange={update("tokenContract")} />
+        </label>
         <div className="create__row">
           <label className="create__field">
             <span>Token symbol</span>
@@ -165,33 +181,37 @@ export function PrivateSaleListingForm({ onCreated }) {
 
         <div className="create__vesting">
           <div className="create__vesting-head">
-            <span>Vesting schedule</span>
-            <span className={vestingTotal !== 100 ? "create__vesting-warn" : ""}>
-              {vestingTotal}% allocated
-            </span>
+            <span>Token delivery (enforced on-chain)</span>
           </div>
-          {form.vestingSchedule.map((step, i) => (
-            <div className="create__vesting-row" key={i}>
-              <input
-                type="text"
-                placeholder="Label (e.g. At TGE, Month 1)"
-                value={step.label}
-                onChange={updateVestingStep(i, "label")}
-              />
-              <input
-                type="number"
-                placeholder="%"
-                value={step.percent}
-                onChange={updateVestingStep(i, "percent")}
-              />
-              <button type="button" onClick={() => removeVestingStep(i)}>
-                ×
-              </button>
-            </div>
-          ))}
-          <button type="button" className="create__vesting-add" onClick={addVestingStep}>
-            + Add vesting step
-          </button>
+          <p className="create__note">
+            Investors claim their tokens from the sale contract on this schedule. It cannot be changed once the
+            contract is deployed. You must deposit enough tokens into the contract before the sale can open.
+          </p>
+          <div className="create__row">
+            <label className="create__field">
+              <span>Claim opens (TGE date)</span>
+              <input type="datetime-local" value={form.tgeAt} onChange={update("tgeAt")} />
+            </label>
+            <label className="create__field">
+              <span>Unlocked at TGE (%)</span>
+              <input type="number" min="0" max="100" value={form.tgePercent} onChange={update("tgePercent")} />
+            </label>
+          </div>
+          <div className="create__row">
+            <label className="create__field">
+              <span>Cliff after TGE (months)</span>
+              <input type="number" min="0" max="48" value={form.cliffMonths} onChange={update("cliffMonths")} />
+            </label>
+            <label className="create__field">
+              <span>Linear vesting after cliff (months)</span>
+              <input type="number" min="0" max="60" value={form.linearMonths} onChange={update("linearMonths")} />
+            </label>
+          </div>
+          <p className="create__note">
+            Example: 20% at TGE, 1-month cliff, 6 months linear means 20% on the TGE date, nothing for a month, then
+            the remaining 80% unlocks evenly over 6 months. The TGE date must be on or after the sale end date, and
+            within 180 days of it.
+          </p>
         </div>
       </section>
 

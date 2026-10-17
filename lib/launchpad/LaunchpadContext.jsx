@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 import { useAccount, useConnect, useDisconnect, useWriteContract } from "wagmi";
-import { waitForTransactionReceipt } from "@wagmi/core";
+import { waitForTransactionReceipt, readContract } from "@wagmi/core";
 import { parseUnits } from "viem";
 import { createClient } from "@/lib/supabase/client";
 import { wagmiConfig } from "./wagmiConfig";
@@ -19,7 +19,10 @@ import {
   USDT_DECIMALS,
   CONTRIBUTION_PAYMENT_WALLET,
   ERC20_TRANSFER_ABI,
+  ERC20_APPROVE_ABI,
 } from "./contracts";
+import { SALE_ROUND_ABI, ERC20_ABI } from "./saleAbi";
+import { ACTIVE_CHAIN } from "./chain";
 
 const LaunchpadContext = createContext(null);
 
@@ -71,6 +74,10 @@ function mapRound(row) {
     vestingSchedule: row.vesting_schedule,
     chain: row.chain || "BNB Chain",
     tgeDate: row.tge_date || null,
+    contractAddress: row.contract_address || null,
+    vestTgePercent: row.vest_tge_percent == null ? null : Number(row.vest_tge_percent),
+    vestCliffMonths: row.vest_cliff_months ?? null,
+    vestLinearMonths: row.vest_linear_months ?? null,
     status: computeRoundStatus({ startsAt: row.starts_at, endsAt: row.ends_at }),
   };
 }
@@ -310,6 +317,49 @@ export function LaunchpadProvider({ children }) {
       const check = validateContribution(roundId, amountUSD);
       if (!check.ok) return check;
 
+      const round = rounds.find((r) => r.id === roundId);
+
+      // ---- Contract-based round: voucher -> approve -> contribute() ----
+      if (round?.contractAddress) {
+        try {
+          const permit = await fetch("/api/launchpad/permit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ roundId, wallet: wallet.address, amountUSD }),
+          }).then((r) => r.json());
+          if (!permit.ok) return { ok: false, error: permit.error };
+
+          const amountWei = BigInt(permit.amountWei);
+          const roundAddr = round.contractAddress;
+          const usdt = await readContract(wagmiConfig, { address: roundAddr, abi: SALE_ROUND_ABI, functionName: "usdt", chainId: ACTIVE_CHAIN.id });
+          const allowance = await readContract(wagmiConfig, { address: usdt, abi: ERC20_ABI, functionName: "allowance", args: [wallet.address, roundAddr], chainId: ACTIVE_CHAIN.id });
+
+          if (allowance < amountWei) {
+            const approveHash = await writeContractAsync({
+              address: usdt, abi: ERC20_APPROVE_ABI, functionName: "approve", args: [roundAddr, amountWei], chainId: ACTIVE_CHAIN.id,
+            });
+            await waitForTransactionReceipt(wagmiConfig, { hash: approveHash, chainId: ACTIVE_CHAIN.id });
+          }
+
+          const txHash = await writeContractAsync({
+            address: roundAddr, abi: SALE_ROUND_ABI, functionName: "contribute",
+            args: [amountWei, BigInt(permit.deadline), BigInt(permit.nonce), permit.signature], chainId: ACTIVE_CHAIN.id,
+          });
+          await waitForTransactionReceipt(wagmiConfig, { hash: txHash, chainId: ACTIVE_CHAIN.id });
+
+          const res = await fetch("/api/launchpad/contribute", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ roundId, txHash }),
+          }).then((r) => r.json());
+          if (res.ok) await refresh();
+          return { ...res, txHash };
+        } catch (err) {
+          return { ok: false, error: err?.shortMessage || "Transaction was rejected or failed." };
+        }
+      }
+
+      // ---- Legacy round (no contract): plain USDT transfer, verified on-chain ----
       let txHash;
       try {
         txHash = await writeContractAsync({
@@ -332,7 +382,7 @@ export function LaunchpadProvider({ children }) {
       if (res.ok) await refresh();
       return { ...res, txHash };
     },
-    [wallet.address, writeContractAsync, validateContribution, refresh]
+    [wallet.address, writeContractAsync, validateContribution, refresh, rounds]
   );
 
   const value = useMemo(

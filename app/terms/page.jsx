@@ -131,20 +131,44 @@ export default function TermsPage() {
           </ul>
         </Section>
 
-        <Section title="6. Funds Handling">
+        <Section title="6. Funds Handling and Refunds">
           <p>
-            Contributions are currently made on-chain, in USDT, and are
-            verified against the BNB Smart Chain public ledger before being
-            recorded. Depending on the round, a minimum raise target may
-            apply; if a round with a minimum target does not meet it by its
-            end date, Investors are entitled to a refund of their
-            Contribution. Where CEXAID operates an escrow mechanism for a
-            given round, the specific mechanics (including any smart
-            contract address) will be disclosed on that round's listing
-            page. CEXAID reserves the right to withhold release of funds to
-            a Founder, or to direct funds be refunded to Investors instead,
-            where CEXAID reasonably believes the Founder has not complied
-            with these Terms or representations made to Investors.
+            Contributions are made on-chain, in USDT, and are verified against
+            the BNB Smart Chain public ledger before being recorded. Each
+            Private Sale round may be run through its own smart contract,
+            whose address is shown on that round&apos;s listing page. The
+            contract enforces the sale window, ticket limits, hard cap and
+            investor eligibility.
+          </p>
+          <p>
+            While a sale is open, contributions are forwarded immediately by
+            the contract to CEXAID&apos;s treasury wallet, so the contract
+            does not hold or escrow Investor funds during the sale. This is
+            deliberate: it limits the amount of value exposed in a single
+            contract at any time.
+          </p>
+          <p>
+            If a round is refunded (for example if a round does not meet its
+            target, is cancelled, or CEXAID reasonably believes a Founder has
+            not complied with these Terms or with representations made to
+            Investors), CEXAID returns the total amount raised to that
+            round&apos;s contract and then opens refunds. The contract will not
+            open refunds until it holds the full amount owed. Each Investor
+            may then claim back their own contribution, in full, by calling
+            the contract from the wallet that contributed. Refunds are
+            claimed by the Investor and are available for a claim window of
+            at least 30 days announced when refunds open; amounts not
+            claimed within that window may be returned to CEXAID, and the
+            round may then be finalized. Refunds are of the USDT contributed;
+            network gas fees and any price movement are not refunded.
+          </p>
+          <p>
+            CEXAID reserves the right to withhold release of funds to a
+            Founder for the reasons above. Once a round has been finalized
+            without refunds being opened, no on-chain refund is available
+            for that round. For rounds without a contract, contributions are
+            sent directly to the wallet shown at the time of contribution and
+            any refund is made by CEXAID directly.
           </p>
         </Section>
 
@@ -161,10 +185,21 @@ export default function TermsPage() {
 
         <Section title="8. Fees">
           <p>
-            Current fees (if any) for listing or contributing are disclosed
-            at the relevant point in the Platform's interface at the time of
-            the transaction. CEXAID may change its fee structure at any
-            time, with changes applying prospectively.
+            <strong>Founder listing fee.</strong> A Founder deploys the
+            sale contract for an approved Private Sale from the
+            Founder&apos;s own wallet and pays a listing fee in USDT, shown
+            on the listing page before deployment (currently 20 USDT). The
+            fee is paid on-chain to CEXAID&apos;s treasury wallet in the
+            same transaction that deploys the contract. It is not
+            refundable, including if the round is later cancelled or
+            refunded.
+          </p>
+          <p>
+            Any other fees are disclosed at the relevant point in the
+            Platform&apos;s interface at the time of the transaction. CEXAID
+            may change its fee structure at any time, with changes applying
+            prospectively. Network gas fees are paid by the User and are
+            not CEXAID fees.
           </p>
         </Section>
 

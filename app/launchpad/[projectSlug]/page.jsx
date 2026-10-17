@@ -3,7 +3,7 @@
 import { notFound, useParams } from "next/navigation";
 import Link from "next/link";
 import { useLaunchpad } from "@/lib/launchpad/LaunchpadContext";
-import { isRoundPublic } from "@/lib/launchpad/roundStatus";
+import { isRoundPublic, computeRoundStatus } from "@/lib/launchpad/roundStatus";
 import { RoundCard } from "@/components/launchpad/RoundCard";
 import { ContributionForm } from "@/components/launchpad/ContributionForm";
 import { VestingSchedule } from "@/components/launchpad/VestingSchedule";
@@ -14,6 +14,8 @@ import { CopyLinkButton } from "@/components/launchpad/CopyLinkButton";
 import { ProjectLogo } from "@/components/launchpad/ProjectLogo";
 import { Collapsible } from "@/components/launchpad/Collapsible";
 import { ContributorsList } from "@/components/launchpad/ContributorsList";
+import { ContractRoundSection } from "@/components/launchpad/ContractRoundSection";
+import { FounderDeployPanel } from "@/components/launchpad/FounderDeployPanel";
 
 export default function ProjectPage() {
   const params = useParams();
@@ -25,6 +27,8 @@ export default function ProjectPage() {
       <main className="project">
         <p className="project__loading">Loading…</p>
         <style jsx>{`
+        .project__contract { font-size: 0.78rem; color: var(--lp-mute); margin: 0; line-height: 1.5; }
+        .project__contract a { color: var(--lp-brass-bright); }
           .project__loading {
             max-width: 1080px;
             margin: 4rem auto;
@@ -39,7 +43,7 @@ export default function ProjectPage() {
 
   if (!project) return notFound();
 
-  const isFounder = wallet.address && wallet.address === project.founderWallet;
+  const isFounder = !!wallet.address && !!project.founderWallet && wallet.address.toLowerCase() === project.founderWallet.toLowerCase();
 
   const projectRounds = rounds
     .filter((r) => r.projectId === project.id)
@@ -99,22 +103,40 @@ export default function ProjectPage() {
         {projectRounds.map((round) => {
           const isPublic = isRoundPublic(round);
           const gated = round.requiresApproval && !wallet.isApprovedInvestor;
+          // New-style rounds (with a TGE date) only run on their own contract. Until the founder
+          // deploys it, nothing can be contributed.
+          const awaitingContract = isPublic && !round.contractAddress && !!round.tgeDate;
+          const canDeploy = awaitingContract && isFounder && computeRoundStatus(round) !== "closed";
 
           return (
             <div className="project__round" key={round.id}>
               <RoundCard round={round} />
+              {round.contractAddress && isPublic && <ContractRoundSection round={round} />}
+              {canDeploy && <FounderDeployPanel round={round} project={project} />}
 
               <div className="project__round-detail">
                 {!isPublic && <PendingReviewCard status={round.approvalStatus} />}
 
                 {isPublic && (
                   <>
-                    <Collapsible
-                      title="Claim / vesting schedule"
-                      subtitle={`Converts to ${round.tokenSymbol} once TGE is announced`}
-                    >
-                      <VestingSchedule steps={round.vestingSchedule} />
-                    </Collapsible>
+                    {awaitingContract && (
+                      <div className="project__card">
+                        <h4>Sale not open yet</h4>
+                        <p className="project__vesting-note">
+                          CEXAID has approved this round. It opens once the founder deploys the sale contract and
+                          deposits the tokens into it. Contributions are not possible before then.
+                        </p>
+                      </div>
+                    )}
+
+                    {!round.contractAddress && !round.tgeDate && (
+                      <Collapsible
+                        title="Claim / vesting schedule"
+                        subtitle={`Converts to ${round.tokenSymbol} once TGE is announced`}
+                      >
+                        <VestingSchedule steps={round.vestingSchedule} />
+                      </Collapsible>
+                    )}
 
                     <Collapsible
                       title="Contributors"
@@ -138,7 +160,7 @@ export default function ProjectPage() {
                       </div>
                     )}
 
-                    {!gated && !project.isDemo && <ContributionForm round={round} />}
+                    {!gated && !project.isDemo && !awaitingContract && <ContributionForm round={round} />}
                     {!gated && project.isDemo && (
                       <div className="project__card project__demo-notice">
                         <h4>Demo listing</h4>

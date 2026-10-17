@@ -12,7 +12,7 @@ export async function GET() {
   const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("rounds")
-    .select("*, projects(name, slug, is_demo)")
+    .select("*, projects(name, slug, is_demo, founder_wallet, contract_address)")
     .eq("type", "private")
     .eq("approval_status", "approved")
     .order("created_at", { ascending: false });
