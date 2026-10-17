@@ -41,7 +41,6 @@ export default function TokenPage() {
         <Link href="/" className="back">← Back to Home</Link>
 
         <section className="hero">
-          <span className="pill">{t.status}</span>
           <h1>{t.name}{t.ticker ? <span> ({t.ticker})</span> : null}</h1>
           <p>{t.tagline}</p>
           <nav className="jump">

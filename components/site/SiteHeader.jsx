@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { fmtUsd, fmtPct } from "@/lib/market/format";
+import { LogoMark } from "@/components/site/LogoMark";
 
 const MENU = [
   {
@@ -97,7 +98,7 @@ export function SiteHeader() {
     <header className="sh">
       <StatsBar />
       <nav className="sh__nav">
-        <Link href="/" className="sh__logo">CEX<span>AID</span></Link>
+        <Link href="/" className="sh__logo"><LogoMark size={28} /><b>CEX<span>AID</span></b></Link>
 
         <ul className="sh__menu">
           {MENU.map((m) => (
@@ -143,7 +144,8 @@ export function SiteHeader() {
       <style jsx>{`
         .sh { position: sticky; top: 0; z-index: 50; background: rgba(9, 11, 16, 0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--lp-line); }
         .sh__nav { max-width: 1280px; margin: 0 auto; padding: 0.7rem 1.25rem; display: flex; align-items: center; gap: 1.5rem; }
-        .sh__logo { font-weight: 800; font-size: 1.35rem; letter-spacing: 0.02em; color: var(--lp-ink); text-decoration: none; }
+        .sh__logo { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 800; font-size: 1.35rem; letter-spacing: 0.02em; color: var(--lp-ink); text-decoration: none; }
+        .sh__logo b { font-weight: 800; }
         .sh__logo span { color: var(--lp-brass); }
         .sh__menu { display: flex; gap: 0.25rem; list-style: none; margin: 0; padding: 0; flex: 1; }
         .sh__item { position: relative; }

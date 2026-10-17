@@ -103,7 +103,7 @@ export default function AboutPage() {
 
           <div className="mt-8 flex flex-wrap items-center gap-5">
             <a
-              href="https://t.me/Bridge4_2"
+              href="https://t.me/cexaidfunding"
               target="_blank"
               rel="noreferrer"
               className="flex h-14 w-14 items-center justify-center rounded-full border border-[#3772ff]/30 bg-[#3772ff]/10 text-[#6d97ff] transition hover:bg-[#3772ff] hover:text-white"
@@ -128,6 +128,18 @@ export default function AboutPage() {
               <Mail />
             </a>
           </div>
+          <p className="mt-5 text-sm text-[#8a93a3]">
+            <a href="mailto:contact@cexaid.com" className="text-[#6d97ff] hover:underline">contact@cexaid.com</a>
+            {" · "}
+            <a
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=contact@cexaid.com&su=CEXAID%20enquiry"
+              target="_blank"
+              rel="noreferrer"
+              className="hover:text-[#6d97ff] hover:underline"
+            >
+              Open in Gmail
+            </a>
+          </p>
         </div>
       </div>
     </main>

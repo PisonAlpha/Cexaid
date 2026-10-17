@@ -14,7 +14,6 @@ export function TokenSection() {
     <section className="ts" id="token">
       <div className="ts__head">
         <div>
-          <span className="ts__pill">{t.status}</span>
           <h2>{t.name}</h2>
           <p>{t.about[0]}</p>
         </div>

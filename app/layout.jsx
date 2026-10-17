@@ -13,9 +13,24 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata = {
+  metadataBase: new URL("https://www.cexaid.com"),
   title: "CEXAID | Crypto Listings, Funding & Growth",
   description:
     "CEXAID helps crypto projects secure exchange listings, connect with VCs, grow communities, access funding, and explore opportunities.",
+  openGraph: {
+    title: "CEXAID | Crypto Listings, Funding & Growth",
+    description:
+      "Markets, token unlocks and a private-sale launchpad for crypto projects.",
+    url: "https://www.cexaid.com",
+    siteName: "CEXAID",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "CEXAID | Crypto Listings, Funding & Growth",
+    description:
+      "Markets, token unlocks and a private-sale launchpad for crypto projects.",
+  },
 };
 
 export default function RootLayout({ children }) {
