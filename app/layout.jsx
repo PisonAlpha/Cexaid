@@ -1,5 +1,6 @@
 import { Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+import StyledJsxRegistry from "@/components/site/StyledJsxRegistry";
 
 const body = Inter({
   subsets: ["latin"],
@@ -36,7 +37,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${body.variable} ${mono.variable}`}>
-      <body>{children}</body>
+      <body>
+        <StyledJsxRegistry>{children}</StyledJsxRegistry>
+      </body>
     </html>
   );
 }

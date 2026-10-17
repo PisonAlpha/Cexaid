@@ -47,6 +47,21 @@ export async function POST(request) {
         { status: 400 }
       );
     }
+    // Logo is optional: a small PNG/JPG/WebP picture (sent as a data URL, already shrunk in the
+    // browser) or an https link. Anything else is refused.
+    let logo = "";
+    if (logoUrl) {
+      const v = String(logoUrl).trim();
+      const okData = v.length <= 170000 && /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(v);
+      const okUrl = v.length <= 500 && /^https:\/\/[^\s"'<>]+$/i.test(v);
+      if (!okData && !okUrl) {
+        return NextResponse.json(
+          { ok: false, error: "The logo must be a PNG, JPG or WebP image. Please upload it again." },
+          { status: 400 }
+        );
+      }
+      logo = v;
+    }
     const tgePct = Number(tgePercent);
     const cliffM = Math.floor(Number(cliffMonths));
     const linearM = Math.floor(Number(linearMonths));
@@ -134,7 +149,7 @@ export async function POST(request) {
           tagline,
           description,
           website: website || "",
-          logo_url: logoUrl || "",
+          logo_url: logo,
           twitter: twitter || "",
           telegram: telegram || "",
           contract_address: tokenAddr || null,

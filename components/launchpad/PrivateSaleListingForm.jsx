@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useLaunchpad } from "@/lib/launchpad/LaunchpadContext";
 import { WalletConnectButton } from "./WalletConnectButton";
+import { LogoPicker } from "./LogoPicker";
 
 export function PrivateSaleListingForm({ onCreated }) {
   const { wallet, createPrivateSaleListing, myProject } = useLaunchpad();
@@ -11,6 +12,7 @@ export function PrivateSaleListingForm({ onCreated }) {
     tagline: myProject?.tagline ?? "",
     description: myProject?.description ?? "",
     website: myProject?.website ?? "",
+    logoUrl: myProject?.logoUrl ?? "",
     twitter: myProject?.twitter ?? "",
     telegram: myProject?.telegram ?? "",
     roundTagline: "",
@@ -94,12 +96,14 @@ export function PrivateSaleListingForm({ onCreated }) {
         <WalletConnectButton />
       </div>
       <p className="create__note">
-        Reviewed by CEXAID before it goes public. No listing fee for this
-        path — approval typically takes 1–2 business days.
+        Reviewed by CEXAID before it goes public — approval typically takes
+        1–2 business days. After approval you deploy the sale contract from your
+        own wallet and pay a 20 USDT listing fee to the CEXAID treasury.
       </p>
 
       <section className="create__section">
         <h4>Project details</h4>
+        <LogoPicker value={form.logoUrl} name={form.name} disabled={!!myProject} onChange={(v) => setForm((prev) => ({ ...prev, logoUrl: v }))} />
         <label className="create__field">
           <span>Project name</span>
           <input type="text" value={form.name} onChange={update("name")} disabled={!!myProject} />

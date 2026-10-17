@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { explorerAddressUrl } from "@/lib/launchpad/chain";
+import { ProjectLogo } from "./ProjectLogo";
 
 const row = { display: "grid", gridTemplateColumns: "150px 1fr", gap: "0.6rem", padding: "0.3rem 0", borderBottom: "1px solid var(--lp-line)", fontSize: "0.8rem", lineHeight: 1.5 };
 const k = { color: "var(--lp-mute)", fontFamily: "var(--lp-font-mono)", fontSize: "0.72rem" };
@@ -32,7 +33,7 @@ export function RoundReviewDetails({ round, kyc }) {
     <details style={{ marginTop: "0.6rem", width: "100%" }}>
       <summary style={{ cursor: "pointer", color: "var(--lp-brass-bright)", fontSize: "0.82rem" }}>Review everything the founder submitted</summary>
       <div style={{ marginTop: "0.6rem", fontFamily: "var(--lp-font-body)" }}>
-        <div style={row}><span style={k}>Project</span><span><b>{p.name}</b>{p.tagline ? ` — ${p.tagline}` : ""}</span></div>
+        <div style={row}><span style={k}>Project</span><span style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}><ProjectLogo name={p.name} logoUrl={p.logo_url} size={40} /><span><b>{p.name}</b>{p.tagline ? ` — ${p.tagline}` : ""}</span></span></div>
         <div style={row}><span style={k}>Description</span><span style={{ whiteSpace: "pre-wrap" }}>{p.description || "—"}</span></div>
         <div style={row}>
           <span style={k}>Links</span>

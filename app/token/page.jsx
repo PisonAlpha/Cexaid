@@ -69,6 +69,12 @@ export default function TokenPage() {
             <div><span>Total supply</span><b>{fmt(tk.totalSupply)}</b></div>
             <div><span>Initial circulating</span><b>{initialPct != null ? `${initialPct}% (${fmt(initialTokens)} ${t.ticker || ""})` : TBA}</b></div>
             <div><span>Chain</span><b>{tk.chain || TBA}</b></div>
+            {tk.contract && (
+              <div><span>Token contract</span><b><a href={`https://bscscan.com/token/${tk.contract}`} target="_blank" rel="noopener noreferrer" style={{ color: "var(--lp-brass-bright)" }}>{tk.contract.slice(0, 8)}…{tk.contract.slice(-6)} ↗</a></b></div>
+            )}
+            {tk.holder && (
+              <div><span>Held by (treasury)</span><b><a href={`https://bscscan.com/address/${tk.holder}`} target="_blank" rel="noopener noreferrer" style={{ color: "var(--lp-brass-bright)" }}>{tk.holder.slice(0, 8)}…{tk.holder.slice(-6)} ↗</a></b></div>
+            )}
           </div>
 
           <div className="dist">

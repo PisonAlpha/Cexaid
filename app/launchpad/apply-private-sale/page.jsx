@@ -25,8 +25,9 @@ export default function ApplyPrivateSalePage() {
         <span className="apply-page__eyebrow">Private Sale</span>
         <h1>Apply for Private Sale — reviewed by CEXAID</h1>
         <p>
-          Reserved for CEXAID-approved investors and VCs. No listing fee —
-          your project is reviewed before the round goes public.
+          Reserved for CEXAID-approved investors and VCs. Your project is
+          reviewed before the round goes public. After approval you deploy the
+          sale contract from your own wallet and pay a 20 USDT listing fee.
         </p>
       </div>
 
