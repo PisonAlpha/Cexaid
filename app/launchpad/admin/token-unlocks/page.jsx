@@ -23,7 +23,7 @@ export default function TokenUnlocksAdmin() {
     setBusy(true);
     setMsg("");
     try {
-      const res = await fetch("/api/admin/token-unlocks", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
+      const res = await fetch("/api/admin/token-unlocks", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, unlockDate: form.unlockDate ? new Date(form.unlockDate).toISOString() : "" }) });
       const d = await res.json();
       setMsg(d.ok ? "Added ✓" : d.error || "Failed");
       if (d.ok) { setForm(EMPTY); load(); }

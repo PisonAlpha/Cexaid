@@ -57,6 +57,12 @@ export function AdminCreateListingForm({ onCreated }) {
 
   const vestingTotal = form.vestingSchedule.reduce((sum, s) => sum + (Number(s.percent) || 0), 0);
 
+  function toIso(v) {
+    if (!v) return "";
+    const d = new Date(v);
+    return Number.isNaN(d.getTime()) ? "" : d.toISOString();
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError(null);
@@ -66,12 +72,20 @@ export function AdminCreateListingForm({ onCreated }) {
       return;
     }
 
+    if (form.startsAt && form.endsAt && new Date(form.endsAt) <= new Date(form.startsAt)) {
+      setError("End date must be after the start date.");
+      return;
+    }
+
     setStatus("submitting");
     const res = await fetch("/api/admin/create-listing", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         ...form,
+        // datetime-local has no time zone: convert to a real UTC instant in the browser
+        startsAt: toIso(form.startsAt),
+        endsAt: toIso(form.endsAt),
         vestingSchedule: form.vestingSchedule.map((s) => ({
           label: s.label,
           percent: Number(s.percent) || 0,
