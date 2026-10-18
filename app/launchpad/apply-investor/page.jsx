@@ -65,13 +65,13 @@ export default function ApplyInvestorPage() {
           flex-direction: column;
           gap: 1.5rem;
         }
-        .apply-page__back {
+        :global(.apply-page__back) {
           font-family: var(--lp-font-mono);
           font-size: 0.78rem;
           color: var(--lp-mute);
           text-decoration: none;
         }
-        .apply-page__back:hover {
+        :global(.apply-page__back:hover) {
           color: var(--lp-brass);
         }
         .apply-page__head {

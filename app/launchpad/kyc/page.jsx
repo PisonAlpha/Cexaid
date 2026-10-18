@@ -36,13 +36,13 @@ export default function KycPage() {
           flex-direction: column;
           gap: 1.5rem;
         }
-        .kyc-page__back {
+        :global(.kyc-page__back) {
           font-family: var(--lp-font-mono);
           font-size: 0.78rem;
           color: var(--lp-mute);
           text-decoration: none;
         }
-        .kyc-page__back:hover {
+        :global(.kyc-page__back:hover) {
           color: var(--lp-brass);
         }
         .kyc-page__head {

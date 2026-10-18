@@ -187,13 +187,13 @@ export default function ProjectPage() {
           flex-direction: column;
           gap: 1.5rem;
         }
-        .project__back {
+        :global(.project__back) {
           font-family: var(--lp-font-mono);
           font-size: 0.78rem;
           color: var(--lp-mute);
           text-decoration: none;
         }
-        .project__back:hover {
+        :global(.project__back:hover) {
           color: var(--lp-brass);
         }
         .project__header {

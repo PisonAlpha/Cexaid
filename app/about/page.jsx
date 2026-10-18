@@ -9,44 +9,18 @@ export const metadata = {
 
 const TEAM = [
   {
-    name: "McConnell Lux",
-    role: "Founder & CEO",
-    initial: "M",
-    description:
-      "Responsible for overall strategy, partnerships, fundraising, and guiding CEXAID's long-term growth.",
-    expertise: ["Blockchain strategy", "Business development", "Product leadership"],
+    name: "Murray",
+    role: "Developer & CTO",
+    photo: "/team/murray.webp",
+    xHandle: "CupstidMurry",
+    xUrl: "https://x.com/CupstidMurry",
   },
   {
-    name: "Sophia Bennett",
-    role: "Chief Technology Officer",
-    initial: "S",
-    description:
-      "Leads technical development, security, and the engineering team responsible for platform innovation.",
-    expertise: ["Blockchain development", "Smart contracts", "Cybersecurity"],
-  },
-  {
-    name: "Daniel Carter",
-    role: "Head of Product & Innovation",
-    initial: "D",
-    description:
-      "Oversees product development and feature planning, ensuring CEXAID delivers practical solutions for users.",
-    expertise: ["Product design", "UX", "Digital transformation"],
-  },
-  {
-    name: "Emily Rodriguez",
-    role: "Marketing & Community Director",
-    initial: "E",
-    description:
-      "Manages marketing campaigns, community engagement, partnerships, and global brand awareness.",
-    expertise: ["Community growth", "Brand strategy", "Crypto communications"],
-  },
-  {
-    name: "Michael Laurent",
-    role: "CFO & Strategy Advisor",
-    initial: "M",
-    description:
-      "Handles financial strategy, private sale planning, investor relations, and long-term sustainability.",
-    expertise: ["Token economics", "Investment strategy", "Risk management"],
+    name: "Leon Hartwell",
+    role: "Co-founder",
+    photo: "/team/leon.webp",
+    xHandle: "leonfinances",
+    xUrl: "https://x.com/leonfinances",
   },
 ];
 
@@ -63,32 +37,29 @@ export default function AboutPage() {
           The team building and operating the CEXAID platform and Launchpad.
         </p>
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid max-w-3xl gap-6 sm:grid-cols-2">
           {TEAM.map((member) => (
             <div
               key={member.name}
-              className="rounded-2xl border border-[#212835] bg-[#11151c] p-6"
+              className="flex flex-col items-center rounded-2xl border border-[#212835] bg-[#11151c] p-8 text-center"
             >
-              <div className="flex items-center gap-4">
-                <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full border border-[#3772ff]/40 bg-[#161b24] font-serif text-xl font-semibold text-[#3772ff]">
-                  {member.initial}
-                </div>
-                <div>
-                  <p className="font-serif text-lg font-semibold text-[#edeff2]">{member.name}</p>
-                  <p className="text-sm text-[#3772ff]">{member.role}</p>
-                </div>
-              </div>
-              <p className="mt-4 text-sm leading-6 text-[#8a93a3]">{member.description}</p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {member.expertise.map((skill) => (
-                  <span
-                    key={skill}
-                    className="rounded-full border border-[#212835] px-3 py-1 text-xs text-[#8a93a3]"
-                  >
-                    {skill}
-                  </span>
-                ))}
-              </div>
+              <img
+                src={member.photo}
+                alt={member.name}
+                width={112}
+                height={112}
+                className="h-28 w-28 rounded-full border border-[#3772ff]/40 object-cover"
+              />
+              <p className="mt-5 font-serif text-xl font-semibold text-[#edeff2]">{member.name}</p>
+              <p className="mt-1 text-sm text-[#3772ff]">{member.role}</p>
+              <a
+                href={member.xUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#3772ff]/30 bg-[#3772ff]/10 px-4 py-2 text-sm text-[#6d97ff] transition hover:bg-[#3772ff] hover:text-white"
+              >
+                <Twitter size={16} /> @{member.xHandle}
+              </a>
             </div>
           ))}
         </div>

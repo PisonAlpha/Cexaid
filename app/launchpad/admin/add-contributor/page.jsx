@@ -188,7 +188,7 @@ export default function AddContributorPage() {
           flex-direction: column;
           gap: 1.25rem;
         }
-        .page__back {
+        :global(.page__back) {
           font-family: var(--lp-font-mono);
           font-size: 0.78rem;
           color: var(--lp-mute);

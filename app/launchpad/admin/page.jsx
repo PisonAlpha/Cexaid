@@ -426,7 +426,7 @@ export default function AdminPage() {
           align-items: center;
           gap: 0.75rem;
         }
-        .admin-dash__create-link {
+        :global(.admin-dash__create-link) {
           font-family: var(--lp-font-mono);
           font-size: 0.78rem;
           color: var(--lp-brass);
