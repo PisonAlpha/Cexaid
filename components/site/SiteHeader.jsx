@@ -13,6 +13,7 @@ const MENU = [
       { href: "/?tab=trending", title: "Trending", desc: "The coins people are searching for right now." },
       { href: "/?tab=new", title: "New Pairs", desc: "Newly listed and created tokens across chains (high risk)." },
       { href: "/unlocks", title: "Token Unlocks", desc: "Upcoming unlocks across the market plus CEXAID private rounds." },
+      { href: "/news", title: "Crypto News", desc: "Live headlines from across the crypto press, linked to the original sources." },
     ],
   },
   {

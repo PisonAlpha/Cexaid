@@ -9,20 +9,25 @@ import { MarketsTerminal } from "@/components/site/MarketsTerminal";
 import { TokenSection } from "@/components/site/TokenSection";
 import { fmtUsd, fmtPct, fmtNum } from "@/lib/market/format";
 
-function Card({ title, href, children }) {
+function Card({ title, href, children, credit, wide }) {
   return (
-    <div className="card">
+    <div className={wide ? "card card--wide" : "card"}>
       <div className="card__head">
         <b>{title}</b>
         <Link href={href}>More ›</Link>
       </div>
       <div className="card__body">{children}</div>
+      {credit && <a className="card__credit" href={credit.href} target="_blank" rel="noopener noreferrer">{credit.text}</a>}
       <style jsx>{`
         .card { background: var(--lp-panel); border: 1px solid var(--lp-line); border-radius: 12px; padding: 0.9rem 1rem; display: flex; flex-direction: column; gap: 0.6rem; min-width: 0; }
         .card__head { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; }
         .card__head :global(a) { color: var(--lp-mute); font-size: 0.76rem; text-decoration: none; }
         .card__head :global(a:hover) { color: var(--lp-brass-bright); }
         .card__body { display: flex; flex-direction: column; gap: 0.5rem; }
+        .card--wide { grid-column: 1 / -1; }
+        .card--wide .card__body { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.8rem 1.6rem; }
+        .card__credit { color: var(--lp-mute); font-size: 0.7rem; text-decoration: none; margin-top: auto; }
+        .card__credit:hover { color: var(--lp-brass-bright); }
       `}</style>
     </div>
   );
@@ -54,12 +59,25 @@ export default function Home() {
   const [trending, setTrending] = useState([]);
   const [fresh, setFresh] = useState([]);
   const [unlocks, setUnlocks] = useState([]);
+  const [patternOn, setPatternOn] = useState(false);
+  const [news, setNews] = useState(null);
   const [lp, setLp] = useState(null);
 
   useEffect(() => {
     fetch("/api/market/trending").then((r) => r.json()).then((d) => d.ok && setTrending(d.coins.slice(0, 5))).catch(() => {});
     fetch("/api/market/new").then((r) => r.json()).then((d) => d.ok && setFresh(d.tokens.slice(0, 5))).catch(() => {});
-    fetch("/api/unlocks").then((r) => r.json()).then((d) => d.ok && setUnlocks(d.events.filter((e) => new Date(e.date) >= new Date()).slice(0, 5))).catch(() => {});
+    fetch("/api/unlocks").then((r) => r.json()).then((d) => {
+      if (!d.ok) return;
+      const today = new Date(); today.setUTCHours(0, 0, 0, 0);
+      const up = d.events.filter((e) => new Date(e.date) >= today);
+      const soon = up.filter((e) => new Date(e.date).getTime() <= today.getTime() + 14 * 86400000);
+      const pool = soon.length >= 5 ? soon : up;
+      const top = [...pool].sort((a, b) => (b.valueUsd ?? -1) - (a.valueUsd ?? -1) || new Date(a.date) - new Date(b.date)).slice(0, 5)
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
+      setUnlocks(top);
+      setPatternOn(top.some((e) => e.source === "pattern"));
+    }).catch(() => {});
+    fetch("/api/news?limit=5").then((r) => r.json()).then((d) => setNews(d.ok ? d : { items: [] })).catch(() => setNews({ items: [] }));
     createClient()
       .from("rounds")
       .select("raised_usd, starts_at, ends_at")
@@ -104,10 +122,10 @@ export default function Home() {
               <Row key={c.id} left={<><b>{c.symbol}</b></>} sub={c.chain} right={fmtUsd(c.liquidity)} />
             ))}
           </Card>
-          <Card title="🔓 Upcoming Unlocks" href="/unlocks">
+          <Card title="🔓 Upcoming Unlocks" href="/unlocks" credit={patternOn ? { text: "Data: PatternPlus", href: "https://pattern.plus" } : null}>
             {unlocks.length === 0 && <span className="mute">No upcoming events yet.</span>}
             {unlocks.map((e) => (
-              <Row key={e.key} left={<b>{e.symbol || e.name}</b>} sub={e.tokens ? `${fmtNum(e.tokens)} tokens` : null}
+              <Row key={e.key} left={<b>{e.symbol || e.name}</b>} sub={e.valueUsd ? fmtUsd(e.valueUsd) : e.tokens ? `${fmtNum(e.tokens)} tokens` : null}
                 right={new Date(e.date).toLocaleDateString(undefined, { month: "short", day: "numeric" })} />
             ))}
           </Card>
@@ -119,6 +137,16 @@ export default function Home() {
                 <Row left="Open now" right={<b>{lp.live}</b>} />
               </>
             ) : <span className="mute">Loading…</span>}
+          </Card>
+          <Card wide title="📰 Latest News" href="/news" credit={news?.provider ? { text: `News via ${news.provider}`, href: news.providerUrl } : null}>
+            {news === null && <span className="mute">Loading…</span>}
+            {news && news.items.length === 0 && <span className="mute">News is unavailable right now.</span>}
+            {news && news.items.slice(0, 5).map((n) => (
+              <a key={n.id} className="newsrow" href={n.url} target="_blank" rel="noopener noreferrer nofollow">
+                <span>{n.title}</span>
+                <small>{n.source}</small>
+              </a>
+            ))}
           </Card>
         </section>
 
@@ -146,6 +174,10 @@ export default function Home() {
         h1 { margin: 0 0 0.4rem; font-size: clamp(1.5rem, 3.5vw, 2.2rem); font-weight: 800; line-height: 1.15; }
         .hero p { margin: 0; color: var(--lp-mute); max-width: 560px; line-height: 1.55; font-size: 0.95rem; }
         .hero__cta { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+        .home :global(.newsrow) { display: flex; flex-direction: column; gap: 0.15rem; color: var(--lp-ink); text-decoration: none; font-size: 0.82rem; line-height: 1.35; }
+        .home :global(.newsrow span) { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .home :global(.newsrow small) { color: var(--lp-mute); font-size: 0.7rem; }
+        .home :global(.newsrow:hover span) { color: var(--lp-brass-bright); }
         .home :global(.btn) { border: 1px solid var(--lp-line); background: var(--lp-panel-raised); color: var(--lp-ink); font-weight: 600; font-size: 0.86rem; padding: 0.65rem 1.1rem; border-radius: 10px; text-decoration: none; }
         .home :global(.btn--primary) { background: var(--lp-brass); border-color: var(--lp-brass); color: var(--lp-on-accent); }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 0.9rem; }

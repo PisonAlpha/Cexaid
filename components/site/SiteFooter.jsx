@@ -56,7 +56,9 @@ export function SiteFooter() {
         <Link href="/privacy" style={{ color: "inherit" }}>Privacy</Link>
       </div>
       <p style={{ margin: "1rem 0 0", fontSize: "0.72rem" }}>
-        Market data by CoinGecko, CoinPaprika and DexScreener. Not investment advice. © {new Date().getFullYear()} CEXAID
+        Market data by CoinGecko, CoinPaprika and DexScreener. Unlock data:{" "}
+        <a href="https://pattern.plus" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>PatternPlus</a>.
+        {" "}Not investment advice. © {new Date().getFullYear()} CEXAID
       </p>
     </footer>
   );

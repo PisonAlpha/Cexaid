@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { MarketUnlocks } from "@/components/site/MarketUnlocks";
 import { ProjectLogo } from "@/components/launchpad/ProjectLogo";
 import { fmtNum, fmtUsd } from "@/lib/market/format";
 
@@ -117,36 +118,7 @@ export default function UnlocksPage() {
         </div>
 
         {tab === "market" && (
-          <>
-            <p className="mute">
-              Upcoming unlocks across the market, curated by CEXAID{market?.defillamaEnabled ? " and synced from DefiLlama" : ""}.
-              Dates and amounts come from each project&apos;s published tokenomics — always verify with the project before trading.
-            </p>
-            {market === null && <p className="mute">Loading…</p>}
-            {market && market.events.length === 0 && <p className="mute">No unlock events yet. Admins can add them under Admin → Token unlocks.</p>}
-            {market && market.events.length > 0 && (
-              <div className="wrap">
-                <table>
-                  <thead><tr><th>Date</th><th>Token</th><th>Category</th><th className="r">Tokens</th><th className="r">% of supply</th><th>Source</th></tr></thead>
-                  <tbody>
-                    {market.events.map((e) => {
-                      const days = Math.ceil((new Date(e.date).getTime() - now) / 86400000);
-                      return (
-                        <tr key={e.key}>
-                          <td>{new Date(e.date).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })}<div className="mute">{days < 0 ? "unlocked" : days === 0 ? "today" : `in ${days}d`}</div></td>
-                          <td><b>{e.name}</b> <span className="mute">{e.symbol || ""}</span></td>
-                          <td>{e.category || "—"}</td>
-                          <td className="r">{e.tokens ? fmtNum(e.tokens) : "—"}</td>
-                          <td className="r">{e.percentOfSupply != null ? `${e.percentOfSupply}%` : "—"}</td>
-                          <td className="mute">{e.source === "defillama" ? "DefiLlama" : "CEXAID"}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </>
+          market === null ? <p className="mute">Loading…</p> : <MarketUnlocks market={market} />
         )}
 
         {tab === "cexaid" && (
