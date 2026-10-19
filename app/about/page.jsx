@@ -1,7 +1,7 @@
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import Link from "next/link";
-import { Send, Twitter, Mail } from "lucide-react";
+import { Twitter, Mail } from "lucide-react";
 
 export const metadata = {
   title: "Team & Contact | CEXAID",
@@ -73,15 +73,6 @@ export default function AboutPage() {
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-5">
-            <a
-              href="https://t.me/cexaidfunding"
-              target="_blank"
-              rel="noreferrer"
-              className="flex h-14 w-14 items-center justify-center rounded-full border border-[#3772ff]/30 bg-[#3772ff]/10 text-[#6d97ff] transition hover:bg-[#3772ff] hover:text-white"
-              aria-label="Telegram"
-            >
-              <Send />
-            </a>
             <a
               href="https://x.com/cexaidfunding"
               target="_blank"

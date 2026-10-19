@@ -1,12 +1,11 @@
 import Link from "next/link";
-import { Send, Twitter, Mail } from "lucide-react";
+import { Twitter, Mail } from "lucide-react";
 import { LogoMark } from "@/components/site/LogoMark";
 
 const EMAIL = "contact@cexaid.com";
 const GMAIL = `https://mail.google.com/mail/?view=cm&fs=1&to=${EMAIL}&su=${encodeURIComponent("CEXAID enquiry")}`;
 
 const SOCIALS = [
-  { label: "Telegram", href: "https://t.me/cexaidfunding", Icon: Send, external: true },
   { label: "X (Twitter)", href: "https://x.com/cexaidfunding", Icon: Twitter, external: true },
   { label: "Email", href: `mailto:${EMAIL}`, Icon: Mail, external: false },
 ];

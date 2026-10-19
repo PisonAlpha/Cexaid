@@ -64,7 +64,6 @@ export default function ServicesPage() {
             <h2>Get Listed, Funded or Launched</h2>
             <p>Submit your project and our team will follow up on listing support, investor access or Launchpad applications.</p>
             <p className="links">
-              <a href="https://t.me/cexaidfunding" target="_blank" rel="noreferrer">Telegram</a>
               <a href="https://x.com/cexaidfunding" target="_blank" rel="noreferrer">X</a>
               <a href="mailto:contact@cexaid.com">contact@cexaid.com</a>
               <a href="https://mail.google.com/mail/?view=cm&fs=1&to=contact@cexaid.com&su=CEXAID%20enquiry" target="_blank" rel="noreferrer">Open in Gmail</a>
