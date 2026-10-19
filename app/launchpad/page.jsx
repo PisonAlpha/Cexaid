@@ -96,6 +96,7 @@ export default function LaunchpadMarketplace() {
           <p>Every round is reviewed by CEXAID, and only approved investors can contribute. Apply once, unlock every project.</p>
         </div>
         <div className="hub__hero-actions">
+          <Link href="/launchpad/create-token" className="hub__create">Create a token</Link>
           <WalletConnectButton />
         </div>
       </section>
@@ -224,6 +225,9 @@ export default function LaunchpadMarketplace() {
         .hub { max-width: 1280px; margin: 0 auto; padding: 1.5rem 1.25rem 4rem; display: flex; flex-direction: column; gap: 1.25rem; }
         .hub__hero { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
         h1 { margin: 0 0 0.35rem; font-size: 1.7rem; font-weight: 700; }
+        .hub__hero-actions { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+        :global(.hub__create) { border: 1px solid var(--lp-brass); color: var(--lp-brass-bright); padding: 0.55rem 0.95rem; border-radius: 8px; font-size: 0.82rem; font-weight: 600; text-decoration: none; }
+        :global(.hub__create:hover) { background: var(--lp-brass); color: var(--lp-on-accent); }
         .hub__hero p { margin: 0; color: var(--lp-mute); font-size: 0.92rem; max-width: 560px; line-height: 1.55; }
         .hub__kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.75rem; }
         .hub__kpis div { background: var(--lp-panel); border: 1px solid var(--lp-line); border-radius: 12px; padding: 0.9rem 1rem; display: flex; flex-direction: column; gap: 0.25rem; }

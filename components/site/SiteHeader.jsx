@@ -22,6 +22,7 @@ const MENU = [
       { href: "/launchpad/apply-investor", title: "Investor Access", desc: "Apply once, get approved, join every private sale." },
       { href: "/launchpad/kyc", title: "Founder KYC", desc: "Verify your team to list a project." },
       { href: "/launchpad/apply-private-sale", title: "Apply for a Private Sale", desc: "Submit your round for CEXAID review." },
+      { href: "/launchpad/create-token", title: "Create a Token", desc: "Standard or tax token on BNB Chain. No CEXAID fee, you pay only gas." },
     ],
   },
   {
