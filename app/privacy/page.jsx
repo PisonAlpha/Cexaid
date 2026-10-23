@@ -14,7 +14,7 @@ export default function PrivacyPage() {
         <Link href="/" className="mb-6 inline-block text-sm text-[#8a93a3] hover:text-[#6d97ff]">← Back to Home</Link>
 
         <p className="text-sm font-mono uppercase tracking-widest text-[#8a93a3]">
-          Last updated: July 2026
+          Last updated: October 2026
         </p>
         <h1 className="mt-3 font-serif text-4xl font-semibold text-[#edeff2]">Privacy Policy</h1>
         <p className="mt-4 leading-7 text-[#8a93a3]">
@@ -98,7 +98,22 @@ export default function PrivacyPage() {
           </p>
         </Section>
 
-        <Section title="9. Contact">
+        <Section title="9. Analytics and Cookies">
+          <div id="analytics" />
+          <p>
+            We use two analytics tools to understand how the site is used and to improve it.
+          </p>
+          <ul>
+            <li><strong>Vercel Web Analytics:</strong> measures page views and general usage (such as page, referrer, country, browser and device type). It does not use cookies and does not track visitors across other sites.</li>
+            <li><strong>Google Analytics (GA4):</strong> loaded only if you click "Accept" in the cookie notice. It sets cookies to measure visits and usage, with IP anonymization enabled. If you decline, or make no choice, Google Analytics is not loaded.</li>
+          </ul>
+          <p>
+            You can change your choice at any time using "Cookie settings" in the site footer. Your choice is stored in your
+            browser. Google acts as a processor for this data under its own terms; see Google's privacy information for details.
+          </p>
+        </Section>
+
+        <Section title="10. Contact">
           <p>
             For privacy-related questions or requests, contact{" "}
             <a href="mailto:contact@cexaid.com" className="text-[#3772ff]">contact@cexaid.com</a>.

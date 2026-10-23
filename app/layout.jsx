@@ -1,6 +1,7 @@
 import { Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import StyledJsxRegistry from "@/components/site/StyledJsxRegistry";
+import { SiteAnalytics } from "@/components/site/Analytics";
 
 const body = Inter({
   subsets: ["latin"],
@@ -39,6 +40,7 @@ export default function RootLayout({ children }) {
     <html lang="en" className={`${body.variable} ${mono.variable}`}>
       <body>
         <StyledJsxRegistry>{children}</StyledJsxRegistry>
+        <SiteAnalytics />
       </body>
     </html>
   );

@@ -277,11 +277,20 @@ export function LaunchpadProvider({ children }) {
   const createPrivateSaleListing = useCallback(
     async (form) => {
       if (!wallet.address) return { ok: false, error: "Connect a wallet first." };
-      const res = await fetch("/api/launchpad/private-sale", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ wallet: wallet.address, ...form }),
-      }).then((r) => r.json());
+      let res;
+      try {
+        const r = await fetch("/api/launchpad/private-sale", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ wallet: wallet.address, ...form }),
+        });
+        res = await r.json().catch(() => null);
+        if (!res) {
+          return { ok: false, error: r.status === 413 ? "The logo file is too large. Upload a smaller image." : `The server returned an unexpected response (${r.status}). Please try again.` };
+        }
+      } catch {
+        return { ok: false, error: "Could not reach the server. Check your connection and try again." };
+      }
       if (res.ok) await refresh();
       return res;
     },

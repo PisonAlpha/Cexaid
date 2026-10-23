@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useLaunchpad } from "@/lib/launchpad/LaunchpadContext";
 import { WalletConnectButton } from "./WalletConnectButton";
 import { LogoPicker } from "./LogoPicker";
@@ -30,28 +30,37 @@ export function PrivateSaleListingForm({ onCreated }) {
     linearMonths: "",
   });
   const [error, setError] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const errRef = useRef(null);
 
   function update(field) {
     return (e) => setForm((prev) => ({ ...prev, [field]: e.target.value }));
   }
 
+  function fail(msg) {
+    setError(msg);
+    setTimeout(() => errRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 50);
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
+    if (busy) return;
     setError(null);
+    const setError_ = fail;
     if (!form.name || !form.tagline || !form.description) {
-      setError("Project name, tagline, and description are required.");
+      setError_("Project name, tagline, and description are required.");
       return;
     }
     if (!/^0x[a-fA-F0-9]{40}$/.test(form.tokenContract.trim())) {
-      setError("Create your token first, then paste its contract address here (0x…, 42 characters).");
+      setError_("Create your token first, then paste its contract address here (0x…, 42 characters).");
       return;
     }
     if (!form.tokenSymbol || !form.tokenPriceUSD || !form.totalAllocationUSD || !form.minTicketUSD || !form.maxTicketUSD || !form.startsAt || !form.endsAt) {
-      setError("Fill in all the sale terms.");
+      setError_("Fill in all the sale terms.");
       return;
     }
     if (!form.tgeAt || form.tgePercent === "" || form.linearMonths === "" && Number(form.tgePercent) < 100) {
-      setError("Set the token claim (TGE) date and the vesting terms.");
+      setError_("Set the token claim (TGE) date and the vesting terms.");
       return;
     }
     // Dates are typed in the founder's local time. Convert them to exact UTC moments here in the
@@ -60,37 +69,44 @@ export function PrivateSaleListingForm({ onCreated }) {
     const endMs = new Date(form.endsAt).getTime();
     const tgeMs = new Date(form.tgeAt).getTime();
     if (!startMs || !endMs || !tgeMs) {
-      setError("One of the dates is not valid. Re-enter the start, end and claim (TGE) dates.");
+      setError_("One of the dates is not valid. Re-enter the start, end and claim (TGE) dates.");
       return;
     }
     if (endMs <= startMs) {
-      setError("The sale end must be after the sale start.");
+      setError_("The sale end must be after the sale start.");
       return;
     }
     if (endMs <= Date.now()) {
-      setError("The sale end date is already in the past.");
+      setError_("The sale end date is already in the past.");
       return;
     }
     if (tgeMs < endMs) {
-      setError("The token claim (TGE) date must be on or after the sale end date.");
+      setError_("The token claim (TGE) date must be on or after the sale end date.");
       return;
     }
-    const result = await createPrivateSaleListing({
-      ...form,
-      tokenContract: form.tokenContract.trim(),
-      startsAt: new Date(startMs).toISOString(),
-      endsAt: new Date(endMs).toISOString(),
-      tgeAt: new Date(tgeMs).toISOString(),
-    });
-    if (result.ok) {
-      onCreated?.(result);
-    } else {
-      setError(result.error);
+    setBusy(true);
+    try {
+      const result = await createPrivateSaleListing({
+        ...form,
+        tokenContract: form.tokenContract.trim(),
+        startsAt: new Date(startMs).toISOString(),
+        endsAt: new Date(endMs).toISOString(),
+        tgeAt: new Date(tgeMs).toISOString(),
+      });
+      if (result?.ok) {
+        onCreated?.(result);
+      } else {
+        setError_(result?.error || "The submission was not accepted. Please try again.");
+      }
+    } catch {
+      setError_("Could not reach the server. Check your connection and try again.");
+    } finally {
+      setBusy(false);
     }
   }
 
   return (
-    <form className="create" onSubmit={handleSubmit}>
+    <form className="create" onSubmit={handleSubmit} noValidate>
       <div className="create__head">
         <h3>Apply for Private Sale</h3>
         <WalletConnectButton />
@@ -219,10 +235,10 @@ export function PrivateSaleListingForm({ onCreated }) {
         </div>
       </section>
 
-      <button type="submit" className="create__submit" disabled={!wallet.address}>
-        {wallet.address ? "Submit for CEXAID review" : "Connect a wallet to continue"}
+      <button type="submit" className="create__submit" disabled={!wallet.address || busy}>
+        {!wallet.address ? "Connect a wallet to continue" : busy ? "Submitting…" : "Submit for CEXAID review"}
       </button>
-      {error && <p className="create__error">{error}</p>}
+      {error && <p className="create__error" role="alert" ref={errRef}>{error}</p>}
 
       <style jsx>{`
         .create {

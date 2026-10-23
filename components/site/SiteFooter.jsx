@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Twitter, Mail } from "lucide-react";
 import { LogoMark } from "@/components/site/LogoMark";
+import { CookieSettingsLink } from "@/components/site/Analytics";
 
 const EMAIL = "contact@cexaid.com";
 const GMAIL = `https://mail.google.com/mail/?view=cm&fs=1&to=${EMAIL}&su=${encodeURIComponent("CEXAID enquiry")}`;
@@ -38,6 +39,17 @@ export function SiteFooter() {
           </a>
         ))}
       </div>
+      <p style={{ margin: "0 0 0.9rem" }}>
+        <a
+          href="https://iq.wiki/wiki/cexaid"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", color: "var(--lp-ink)", textDecoration: "none", border: "1px solid var(--lp-line)", borderRadius: 999, padding: "0.3rem 0.8rem 0.3rem 0.45rem" }}
+        >
+          <img src="/iqwiki.png" alt="" width={24} height={20} style={{ display: "block" }} />
+          <span>CEXAID on IQ.wiki</span>
+        </a>
+      </p>
       <p style={{ margin: "0 0 1.2rem" }}>
         <a href={`mailto:${EMAIL}`} style={{ color: "var(--lp-brass-bright)" }}>{EMAIL}</a>
         <span aria-hidden="true"> · </span>
@@ -53,6 +65,7 @@ export function SiteFooter() {
         <Link href="/about" style={{ color: "inherit" }}>Team &amp; Contact</Link>
         <Link href="/terms" style={{ color: "inherit" }}>Terms</Link>
         <Link href="/privacy" style={{ color: "inherit" }}>Privacy</Link>
+        <CookieSettingsLink />
       </div>
       <p style={{ margin: "1rem 0 0", fontSize: "0.72rem" }}>
         Market data by CoinGecko, CoinPaprika and DexScreener. Unlock data:{" "}
