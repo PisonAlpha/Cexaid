@@ -4,6 +4,8 @@ import { publicClient } from "@/lib/launchpad/saleServer";
 import { ERC20_ABI } from "@/lib/launchpad/saleAbi";
 import { monthlySteps, usdToWei } from "@/lib/launchpad/units";
 
+export const maxDuration = 30;
+
 function slugify(name) {
   return name
     .toLowerCase()

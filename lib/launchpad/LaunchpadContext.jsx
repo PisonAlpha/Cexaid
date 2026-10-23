@@ -283,15 +283,20 @@ export function LaunchpadProvider({ children }) {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ wallet: wallet.address, ...form }),
+          signal: AbortSignal.timeout(45000),
         });
         res = await r.json().catch(() => null);
         if (!res) {
           return { ok: false, error: r.status === 413 ? "The logo file is too large. Upload a smaller image." : `The server returned an unexpected response (${r.status}). Please try again.` };
         }
-      } catch {
+      } catch (err) {
+        if (err?.name === "TimeoutError" || err?.name === "AbortError") {
+          return { ok: false, error: "The server took too long to answer. Your application may still have been saved. Reload this page to check before submitting again." };
+        }
         return { ok: false, error: "Could not reach the server. Check your connection and try again." };
       }
-      if (res.ok) await refresh();
+      // Refresh the lists in the background; never let a slow refresh keep the form spinning.
+      if (res.ok) Promise.race([refresh(), new Promise((r) => setTimeout(r, 8000))]).catch(() => {});
       return res;
     },
     [wallet.address, refresh]
