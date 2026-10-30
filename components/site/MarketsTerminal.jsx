@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Sparkline } from "@/components/site/Sparkline";
+import { CoinChartModal } from "@/components/site/CoinChartModal";
 import { fmtUsd, fmtPct } from "@/lib/market/format";
 
 const TABS = [
@@ -33,6 +34,11 @@ export function MarketsTerminal({ title = "Cryptocurrency Prices by Market Cap" 
   const [source, setSource] = useState("");
   const [q, setQ] = useState("");
   const [sort, setSort] = useState({ key: null, dir: "desc" });
+  const [chart, setChart] = useState(null);
+  const closeChart = useCallback(() => setChart(null), []);
+  const openCoin = (c) => setChart({ kind: "coin", id: c.id, name: c.name, symbol: c.symbol, image: c.image, price: c.price != null ? Number(c.price) : null, change24h: c.change24h, rank: c.rank });
+  const openPair = (c) => setChart({ kind: "pair", name: c.name, symbol: c.symbol, image: c.image, price: c.price, change24h: c.change24h, chain: c.chain, pair: c.pair, url: c.url });
+  const rowProps = (open, c) => ({ style: { cursor: "pointer" }, tabIndex: 0, role: "button", "aria-label": `Open ${c.name} chart`, onClick: () => open(c), onKeyDown: (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(c); } } });
 
   useEffect(() => {
     try {
@@ -115,7 +121,7 @@ export function MarketsTerminal({ title = "Cryptocurrency Prices by Market Cap" 
               <thead><tr>{th("rank", "#")}{th("name", "Name", false)}{th("price", "Price")}{th("change1h", "1h")}{th("change24h", "24h")}{th("change7d", "7d")}{th("marketCap", "Market Cap")}{th("volume24h", "Volume (24h)")}<th className="r">Last 7 Days</th></tr></thead>
               <tbody>
                 {rows.map((c) => (
-                  <tr key={c.id}>
+                  <tr key={c.id} {...rowProps(openCoin, c)}>
                     <td className="r mute">{c.rank ?? "—"}</td>
                     <td><span className="coin">{c.image && <img src={c.image} alt="" width="24" height="24" loading="lazy" />}<b>{c.name}</b> <span className="mute">{c.symbol}</span></span></td>
                     <td className="r">{fmtUsd(c.price, { compact: false })}</td>
@@ -136,7 +142,7 @@ export function MarketsTerminal({ title = "Cryptocurrency Prices by Market Cap" 
               <thead><tr><th>#</th><th>Name</th><th className="r">Price</th><th className="r">24h</th><th className="r">Market Cap</th><th className="r">Market Cap Rank</th></tr></thead>
               <tbody>
                 {rows.map((c) => (
-                  <tr key={c.id}>
+                  <tr key={c.id} {...rowProps(openCoin, c)}>
                     <td className="mute">{c.trendRank}</td>
                     <td><span className="coin">{c.image && <img src={c.image} alt="" width="24" height="24" loading="lazy" />}<b>{c.name}</b> <span className="mute">{c.symbol}</span></span></td>
                     <td className="r">{c.price != null ? fmtUsd(Number(c.price), { compact: false }) : "—"}</td>
@@ -151,10 +157,10 @@ export function MarketsTerminal({ title = "Cryptocurrency Prices by Market Cap" 
 
           {tab === "new" && (
             <table>
-              <thead><tr><th>Token</th><th>Chain</th>{th("price", "Price")}{th("change1h", "1h")}{th("change24h", "24h")}{th("liquidity", "Liquidity")}{th("volume24h", "Volume (24h)")}{th("fdv", "FDV")}{th("createdAt", "Pair age")}<th className="r">Chart</th></tr></thead>
+              <thead><tr><th>Token</th><th>Chain</th>{th("price", "Price")}{th("change1h", "1h")}{th("change24h", "24h")}{th("liquidity", "Liquidity")}{th("volume24h", "Volume (24h)")}{th("fdv", "FDV")}{th("createdAt", "Pair age")}<th className="r">Details</th></tr></thead>
               <tbody>
                 {rows.map((c) => (
-                  <tr key={c.id}>
+                  <tr key={c.id} {...rowProps(openPair, c)}>
                     <td><span className="coin">{c.image ? <img src={c.image} alt="" width="24" height="24" loading="lazy" /> : <i className="ph" />}<b>{c.name}</b> <span className="mute">{c.symbol}</span></span></td>
                     <td><span className="chain">{c.chain}</span></td>
                     <td className="r">{fmtUsd(c.price, { compact: false })}</td>
@@ -164,7 +170,7 @@ export function MarketsTerminal({ title = "Cryptocurrency Prices by Market Cap" 
                     <td className="r">{fmtUsd(c.volume24h)}</td>
                     <td className="r">{fmtUsd(c.fdv)}</td>
                     <td className="r mute">{age(c.createdAt)}</td>
-                    <td className="r"><a href={c.url} target="_blank" rel="noopener noreferrer" className="ext">DexScreener ↗</a></td>
+                    <td className="r"><a href={c.url} target="_blank" rel="noopener noreferrer" className="ext" onClick={(e) => e.stopPropagation()}>DexScreener ↗</a></td>
                   </tr>
                 ))}
               </tbody>
@@ -181,6 +187,9 @@ export function MarketsTerminal({ title = "Cryptocurrency Prices by Market Cap" 
           <button disabled={page >= MAX_PAGES} onClick={() => setPage((p) => p + 1)}>Next →</button>
         </div>
       )}
+
+      {state === "ready" && <p className="mute mt__hint">Click any row to open its chart.</p>}
+      {chart && <CoinChartModal item={chart} onClose={closeChart} />}
 
       <p className="mute mt__attr">
         Data: {tab === "new" ? "DexScreener" : tab === "trending" ? "CoinGecko" : source === "coinpaprika" ? "CoinPaprika" : "CoinGecko"}. Refreshed every few minutes. Informational only, not investment advice.
@@ -204,6 +213,8 @@ export function MarketsTerminal({ title = "Cryptocurrency Prices by Market Cap" 
         td { padding: 0.65rem 1rem; border-bottom: 1px solid var(--lp-line); white-space: nowrap; }
         tr:last-child td { border-bottom: 0; }
         tbody tr:hover { background: var(--lp-panel-raised); }
+        tbody tr:focus-visible { outline: 2px solid var(--lp-brass); outline-offset: -2px; }
+        .mt__hint { margin: 0; font-size: 0.74rem; text-align: center; }
         .r { text-align: right; }
         .coin { display: inline-flex; align-items: center; gap: 0.6rem; }
         .coin img, .ph { border-radius: 50%; width: 24px; height: 24px; background: var(--lp-panel-raised); display: inline-block; }

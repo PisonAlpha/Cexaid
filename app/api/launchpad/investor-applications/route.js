@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
+import { notifyAdmin } from "@/lib/notify";
+
 export async function POST(request) {
   const supabaseSession = await createClient();
   const {
@@ -55,6 +57,7 @@ export async function POST(request) {
   });
   if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
 
+  await notifyAdmin("New investor application", [["Name", name], ["Organization", organization || "-"], ["Email", user.email]]);
   return NextResponse.json({ ok: true });
 }
 

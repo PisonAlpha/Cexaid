@@ -116,7 +116,8 @@ export default function PrivacyPage() {
         <Section title="10. Contact">
           <p>
             For privacy-related questions or requests, contact{" "}
-            <a href="mailto:contact@cexaid.com" className="text-[#3772ff]">contact@cexaid.com</a>.
+            <a href="mailto:contact@cexaid.com" className="text-[#3772ff]">contact@cexaid.com</a>,
+            or write to CEXAID, Postgasse 8b, 1010 Vienna, Austria.
           </p>
         </Section>
       </div>

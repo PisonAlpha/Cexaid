@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
+import { notifyAdmin } from "@/lib/notify";
+
 export async function POST(request) {
   try {
     const { wallet, fullName, email, country, phone, businessName, registrationNumber, businessCountry } =
@@ -57,6 +59,7 @@ export async function POST(request) {
       if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
     }
 
+    await notifyAdmin("New founder KYC submission", [["Name", record.full_name ?? "-"], ["Business", businessName], ["Country", country], ["Wallet", wallet]]);
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("kyc submit error:", err);

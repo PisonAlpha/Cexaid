@@ -50,6 +50,9 @@ export function SiteFooter() {
           <span>CEXAID on IQ.wiki</span>
         </a>
       </p>
+      <address style={{ margin: "0 0 0.9rem", fontStyle: "normal", lineHeight: 1.5 }}>
+        CEXAID · Postgasse 8b · 1010 Vienna, Austria
+      </address>
       <p style={{ margin: "0 0 1.2rem" }}>
         <a href={`mailto:${EMAIL}`} style={{ color: "var(--lp-brass-bright)" }}>{EMAIL}</a>
         <span aria-hidden="true"> · </span>

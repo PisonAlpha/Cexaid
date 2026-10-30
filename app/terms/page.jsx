@@ -271,6 +271,7 @@ export default function TermsPage() {
           <p>
             Questions about these Terms can be sent to{" "}
             <a href="mailto:contact@cexaid.com" className="text-[#3772ff]">contact@cexaid.com</a>.
+            Our address is CEXAID, Postgasse 8b, 1010 Vienna, Austria.
           </p>
         </Section>
       </div>

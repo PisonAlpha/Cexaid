@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { notifyAdmin } from "@/lib/notify";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { publicClient } from "@/lib/launchpad/saleServer";
 import { ERC20_ABI } from "@/lib/launchpad/saleAbi";
@@ -212,6 +213,7 @@ export async function POST(request) {
 
     if (roundError) return NextResponse.json({ ok: false, error: roundError.message }, { status: 500 });
 
+    await notifyAdmin("New Private Sale application", [["Project", project.name || name], ["Token", tokenSymbol], ["Allocation (USD)", totalAllocationUSD], ["Founder wallet", wallet]]);
     return NextResponse.json({ ok: true, projectId: project.id, slug: project.slug, roundId: roundRow.id });
   } catch (err) {
     console.error("private-sale route error:", err);

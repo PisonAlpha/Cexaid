@@ -90,7 +90,10 @@ export default function AboutPage() {
               <Mail />
             </a>
           </div>
-          <p className="mt-5 text-sm text-[#8a93a3]">
+          <address className="mt-5 text-sm not-italic leading-6 text-[#8a93a3]">
+            CEXAID<br />Postgasse 8b<br />1010 Vienna, Austria
+          </address>
+          <p className="mt-3 text-sm text-[#8a93a3]">
             <a href="mailto:contact@cexaid.com" className="text-[#6d97ff] hover:underline">contact@cexaid.com</a>
             {" · "}
             <a
